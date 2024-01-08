@@ -15,6 +15,27 @@
                     <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    <x-nav-link href="{{ route('forms') }}" :active="request()->routeIs('forms')">
+                        {{ __('Formularios') }}
+                    </x-nav-link>
+                    <x-nav-link href="{{ route('tables') }}" :active="request()->routeIs('tables')">
+                        {{ __('Tablas') }}
+                    </x-nav-link>
+                    <x-nav-link href="{{ route('livewire') }}" :active="request()->routeIs('livewire')">
+                        {{ __('Livewire') }}
+                    </x-nav-link>
+                    <x-nav-link href="{{ route('actions') }}" :active="request()->routeIs('actions')">
+                        {{ __('Acciones') }}
+                    </x-nav-link>
+                    <x-nav-link href="{{ route('ui') }}" :active="request()->routeIs('ui')">
+                        {{ __('UI') }}
+                    </x-nav-link>
+                    <x-nav-link href="{{ route('dropdown') }}" :active="request()->routeIs('dropdown')">
+                        {{ __('Dropdown') }}
+                    </x-nav-link>
+                    <x-nav-link href="{{ route('modal') }}" :active="request()->routeIs('modal')">
+                        {{ __('Modal') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -141,6 +162,27 @@
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link href="{{ route('forms') }}" :active="request()->routeIs('forms')">
+                {{ __('Formularios') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link href="{{ route('tables') }}" :active="request()->routeIs('tables')">
+                {{ __('Tablas') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link href="{{ route('livewire') }}" :active="request()->routeIs('livewire')">
+                {{ __('Livewire') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link href="{{ route('actions') }}" :active="request()->routeIs('actions')">
+                {{ __('Acciones') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link href="{{ route('ui') }}" :active="request()->routeIs('ui')">
+                {{ __('UI') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link href="{{ route('dropdown') }}" :active="request()->routeIs('dropdown')">
+                {{ __('Dropdown') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link href="{{ route('modal') }}" :active="request()->routeIs('modal')">
+                {{ __('Modal') }}
             </x-responsive-nav-link>
         </div>
 

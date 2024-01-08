@@ -28,7 +28,6 @@ Route::middleware([
     })->name('dashboard');
 });
 
-
 // RUTAS DE PRUEBA WIREUI
 Route::get('/wireui/forms', function () {
     return view('wireui.forms');
@@ -56,4 +55,12 @@ Route::get('/wireui/actions', function () {
 
 Route::get('/wireui/ui', function () {
     return view('wireui.ui');
-})->name('ui');    
+})->name('ui');
+
+Route::get('/wireui/dropdown', function () {
+    return view('wireui.dropdown');
+})->name('dropdown');
+
+Route::get('/wireui/modal', function () {
+    return view('wireui.modal');
+})->name('modal');   

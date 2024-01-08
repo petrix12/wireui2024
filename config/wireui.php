@@ -61,143 +61,143 @@ return [
     'components' => [
         'avatar' => [
             'class' => Components\Avatar::class,
-            'alias' => 'avatar',
+            'alias' => 'wireui.avatar',
         ],
         'icon' => [
             'class' => Components\Icon::class,
-            'alias' => 'icon',
+            'alias' => 'wireui.icon',
         ],
         'icon.spinner' => [
             'class' => Components\Icons\Spinner::class,
-            'alias' => 'icon.spinner',
+            'alias' => 'wireui.icon.spinner',
         ],
         'color-picker' => [
             'class' => Components\ColorPicker::class,
-            'alias' => 'color-picker',
+            'alias' => 'wireui.color-picker',
         ],
         'input' => [
             'class' => Components\Input::class,
-            'alias' => 'input',
+            'alias' => 'wireui.input',
         ],
         'textarea' => [
             'class' => Components\Textarea::class,
-            'alias' => 'textarea',
+            'alias' => 'wireui.textarea',
         ],
         'label' => [
             'class' => Components\Label::class,
-            'alias' => 'label',
+            'alias' => 'wireui.label',
         ],
         'error' => [
             'class' => Components\Error::class,
-            'alias' => 'error',
+            'alias' => 'wireui.error',
         ],
         'errors' => [
             'class' => Components\Errors::class,
-            'alias' => 'errors',
+            'alias' => 'wireui.errors',
         ],
         'inputs.maskable' => [
             'class' => Components\Inputs\MaskableInput::class,
-            'alias' => 'inputs.maskable',
+            'alias' => 'wireui.inputs.maskable',
         ],
         'inputs.phone' => [
             'class' => Components\Inputs\PhoneInput::class,
-            'alias' => 'inputs.phone',
+            'alias' => 'wireui.inputs.phone',
         ],
         'inputs.currency' => [
             'class' => Components\Inputs\CurrencyInput::class,
-            'alias' => 'inputs.currency',
+            'alias' => 'wireui.inputs.currency',
         ],
         'inputs.number' => [
             'class' => Components\Inputs\NumberInput::class,
-            'alias' => 'inputs.number',
+            'alias' => 'wireui.inputs.number',
         ],
         'inputs.password' => [
             'class' => Components\Inputs\PasswordInput::class,
-            'alias' => 'inputs.password',
+            'alias' => 'wireui.inputs.password',
         ],
         'badge' => [
             'class' => Components\Badge::class,
-            'alias' => 'badge',
+            'alias' => 'wireui.badge',
         ],
         'badge.circle' => [
             'class' => Components\CircleBadge::class,
-            'alias' => 'badge.circle',
+            'alias' => 'wireui.badge.circle',
         ],
         'button' => [
             'class' => Components\Button::class,
-            'alias' => 'button',
+            'alias' => 'wireui.button',
         ],
         'button.circle' => [
             'class' => Components\CircleButton::class,
-            'alias' => 'button.circle',
+            'alias' => 'wireui.button.circle',
         ],
         'dropdown' => [
             'class' => Components\Dropdown::class,
-            'alias' => 'dropdown',
+            'alias' => 'wireui.dropdown',
         ],
         'dropdown.item' => [
             'class' => Components\Dropdown\DropdownItem::class,
-            'alias' => 'dropdown.item',
+            'alias' => 'wireui.dropdown.item',
         ],
         'dropdown.header' => [
             'class' => Components\Dropdown\DropdownHeader::class,
-            'alias' => 'dropdown.header',
+            'alias' => 'wireui.dropdown.header',
         ],
         'notifications' => [
             'class' => Components\Notifications::class,
-            'alias' => 'notifications',
+            'alias' => 'wireui.notifications',
         ],
         'datetime-picker' => [
             'class' => Components\DatetimePicker::class,
-            'alias' => 'datetime-picker',
+            'alias' => 'wireui.datetime-picker',
         ],
         'time-picker' => [
             'class' => Components\TimePicker::class,
-            'alias' => 'time-picker',
+            'alias' => 'wireui.time-picker',
         ],
         'card' => [
             'class' => Components\Card::class,
-            'alias' => 'card',
+            'alias' => 'wireui.card',
         ],
         'native-select' => [
             'class' => Components\NativeSelect::class,
-            'alias' => 'native-select',
+            'alias' => 'wireui.native-select',
         ],
         'select' => [
             'class' => Components\Select::class,
-            'alias' => 'select',
+            'alias' => 'wireui.select',
         ],
         'select.option' => [
             'class' => Components\Select\Option::class,
-            'alias' => 'select.option',
+            'alias' => 'wireui.select.option',
         ],
         'select.user-option' => [
             'class' => Components\Select\UserOption::class,
-            'alias' => 'select.user-option',
+            'alias' => 'wireui.select.user-option',
         ],
         'toggle' => [
             'class' => Components\Toggle::class,
-            'alias' => 'toggle',
+            'alias' => 'wireui.toggle',
         ],
         'checkbox' => [
             'class' => Components\Checkbox::class,
-            'alias' => 'checkbox',
+            'alias' => 'wireui.checkbox',
         ],
         'radio' => [
             'class' => Components\Radio::class,
-            'alias' => 'radio',
+            'alias' => 'wireui.radio',
         ],
         'modal' => [
             'class' => Components\Modal::class,
-            'alias' => 'modal',
+            'alias' => 'wireui.modal',
         ],
         'modal.card' => [
             'class' => Components\ModalCard::class,
-            'alias' => 'modal.card',
+            'alias' => 'wireui.modal.card',
         ],
         'dialog' => [
             'class' => Components\Dialog::class,
-            'alias' => 'dialog',
+            'alias' => 'wireui.dialog',
         ],
     ],
 ];
