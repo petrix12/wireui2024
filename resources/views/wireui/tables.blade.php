@@ -9,7 +9,9 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">            
                 <div class="container">
-                    <!-- AQUÍ EL CONTENIDO -->
+                    <x-wireui.card title="Tabla de prueba">
+                        @livewire('user-table')
+                    </x-wireui.card>
                 </div>
             </div>
         </div>
