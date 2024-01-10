@@ -100,3 +100,39 @@
     }    
     ```
 
+## Migración
++ Documentación: https://laravel.com/docs/10.x/migrations
++ Nombre de ejemplo de un archivo de migración y los posibles tipos de campos a definir:
+    + Nombre: database\migrations\2014_10_12_000000_create_users_table.php
+    + Código:
+        ```php
+        // ...
+        public function up(): void
+        {
+            Schema::create('users', function (Blueprint $table) {
+                $table->id();                                           // Crea la columna id
+                $table->string('name', 150);
+                $table->string('email')->unique();
+                $table->texto('descripción');
+                $table->timestamp('email_verified_at')->nullable();
+                $table->string('password');
+                $table->rememberToken();                                // Crea la columna remember_token
+                $table->foreignId('current_team_id')->nullable();
+                $table->string('profile_photo_path', 2048)->nullable();
+                $table->timestamps();                                   // Crea las columnas created_at y updated_at
+            });
+        }
+        // ...   
+        ```
++ Ejecutar las migraciones:
+    + $ php artisan migrate
++ Crear migración:
+    + $ php artisan make:migration nombretabla
++ Crear migración siguiendo las convenciones de Laravel:
+    + $ php artisan make:migration create_nombretabla_table
+    + **Nota:** al usar esta convención se crean las estructuras de los métodos **up** y **down** en el archivo de la migración.
++ Revertir cambios de la última migración:
+    + $ php artisan migrate:rollback
++ Revertir todos los cambios y volver a ejecutar las migraciones:
+    + $ php artisan migrate:fresh
++ mmm
