@@ -92,6 +92,11 @@
     ```php
     Route::resource('modelos', ModeloController::class);
     ```
++ Ejemplo de ruta cuando queremos mostrar contenido estático:
+    ```php
+    Route::view('mirutaestatica', 'vista');
+    ```
+
 + Ver todas las rutas:
     + $ php artisan r:l
 
