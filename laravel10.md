@@ -20,8 +20,12 @@
 + Alpine.js IntelliSense (Adrian Wilczyński).
 + GitHub Copilot (GitHub).
 
+## Extensiones de Google recomendadas:
++ JSON Formatter
+
 ## Documentación:
 + [Página oficial de Laravel](https://laravel.com).
++ [Laravel Lang](https://laravel-lang.com/installation.html).
 
 ## Instalación Laravel
 + Instalar el instalador de Laravel:
@@ -58,10 +62,203 @@
             Route::get('ruta3', 'metodo3');
         });
         ```
++ Asignar nombre identificativo a una ruta:
+    ```php
+    Route::get('ruta', [NombreController::class, 'nombre_metodo'])->name('mi_ruta.ruta');
+    ```
+    + **Nota 1:** ejemplo para invocar ruta desde una vista:
+        ```php
+        <!-- ... -->
+        <a href="{{ route('mi_ruta.ruta') }}">Mi ruta</a>
+        <!-- ... -->
+        ```
+    + **Nota 1:** ejemplo para invocar ruta con parámetro desde una vista:
+        ```php
+        <!-- ... -->
+        <a href="{{ route('mi_ruta.ruta', 'parametro') }}">Mi ruta</a>
+        <!-- ... -->
+        ```
++ Ejemplo de modelo de rutas para un CRUD:
+    ```php
+    Route::get('modelos', [ModeloController::class, 'index'])->name('modelos.index');
+    Route::get('modelos/create', [ModeloController::class, 'create'])->name('modelos.create');
+    Route::post('modelos', [ModeloController::class, 'store'])->name('modelos.store');
+    Route::get('modelos/{modelo}', [ModeloController::class, 'show'])->name('modelos.show');
+    Route::get('modelos/{modelo}/edit', [ModeloController::class, 'edit'])->name('modelos.edit');
+    Route::put('modelos/{modelo}', [ModeloController::class, 'update'])->name('modelos.update');
+    Route::delete('modelos/{modelo}', [ModeloController::class, 'destroy'])->name('modelos.destroy');
+    ```
++ Ejemplo de modelo de rutas para un CRUD con resource:
+    ```php
+    Route::resource('modelos', ModeloController::class);
+    ```
++ Ver todas las rutas:
+    + $ php artisan r:l
 
-## Controlador
+## Controladores
 + Crear controlador:
     + $ php artisan make:controller NombreController
++ Ejemplo de un controlador para un CRUD
+    + app\Http\Controllers\ModeloController.php
+        ```php
+        // ...
+        use App\Models\Modelo;
+        // ...
+        class ModeloController extends Controller
+        {
+            public function index() {
+                $modelos = Modelo::paginate();
+                return view('crud.modelos.index', compact('modelos'));
+            }
+
+            public function create() {
+                return view('crud.modelos.create');
+            }
+
+            public function store(Request $request) {
+                $request->validate([
+                    'propiedad1' => 'required|min:12'
+                    // Forma alternativa:
+                    // 'propiedad1' => ['required', 'min:12']
+                ]);
+                // Forma 1:
+                /*
+                $modelo = new Modelo();
+                $modelo->propiedad1 = $request->propiedad1;
+                $modelo->save();
+                */
+
+                // Forma 2:
+                /*
+                $modelo = Modelo::create([
+                    'propiedad1' => $request->propiedad1
+                ]);
+                */
+
+                // Forma 3:
+                $modelo = Modelo::create($request->all());
+
+                return redirect()->route('modelos.show', $modelo);
+            }
+
+            public function show(Modelo $modelo) {
+                return view('crud.modelos.show', compact('modelo'));
+            }
+
+            public function edit(Modelo $modelo) {
+                return view('crud.modelos.edit', compact('modelo'));
+            }
+
+            public function update(Request $request, Modelo $modelo) {
+                $request->validate([
+                    // Reglas de validación
+                    'propiedad1' => 'required|min:12'
+                ], [
+                    // Personalización de los mensajes de error
+                    'propiedad1.required' => 'La propiedad 1 es obligatoria'
+                ], [
+                    // Personalización de los atributos
+                    'propiedad1' => 'Cambio de nombre'
+                ]);
+
+                // Forma 1:
+                /*
+                $modelo->propiedad1 = $request->propiedad1;
+                $modelo->save();
+                */
+
+                // Forma 2:
+                $modelo->update(['propiedad1' => $request->propiedad1]);
+
+                // Forma 3:
+                $modelo->update($request->all());
+
+                return redirect()->route('modelos.show', $modelo);
+            }
+
+            public function destroy(Modelo $modelo) {
+                $modelo->delete();
+                return redirect()->route('modelos.index');
+            }
+        }        
+        ```
+
+## Vistas
++ Ejemplos de vistas para un CRUD:
+    + resources/views/crud/modelos/index.blade.php
+        ```php
+        @extends('layouts.mi_plantilla')
+
+        @section('title', 'Lista modelos')
+
+        @section('content')
+            <h1>Lista modelos</h1>
+            <ul>
+                @foreach($modelos as $modelo)
+                    <li>Propiedad 1: {{ $modelo->propiedad1 }}</li>
+                @endforeach
+            </ul>
+            <!-- Si el controlador envía los registros paginados -->
+            {{ $modelos->link() }}
+        @endsection
+        ```
+    + resources\views\crud\modelos\create.blade.php
+        ```php
+        @extends('layouts.mi_plantilla')
+
+        @section('title', 'Crear modelo')
+
+        @section('content')
+            <h1>Crear modelo</h1>
+            <form action="{{ route('modelos.store') }}" method="POST">
+                @csrf
+                <label>Propiedad 1</label>
+                <input type="text" name="propiedad1" value="{{ old('propiedad1') }}" />
+                @error('propiedad1')
+                    {{ $message }}
+                @enderror
+                <button type="submit">Crear</button>
+            </form>
+        @endsection
+        ```
+    + resources\views\crud\modelos\show.blade.php
+        ```php
+        @extends('layouts.mi_plantilla')
+
+        @section('title', 'Mostrar modelo')
+
+        @section('content')
+            <h1>Mostrar modelo</h1>
+            <label>Propiedad 1: {{ $modelo->propiedad1 }}</label>
+            <a href="{{ route('modelos.index') }}">Lista de modelos</a>
+            <a href="{{ route('modelos.edit', $modelo) }}">Editar modelo</a>
+            <form action="{{ route('modelos.destroy', $modelo) }}" method="POST">
+                @csrf
+                @method('delete')
+                <button type="submit">Eliminar modelo</button>
+            </form>
+        @endsection        
+        ```
+    + resources\views\crud\modelos\edit.blade.php
+        ```php
+        @extends('layouts.mi_plantilla')
+
+        @section('title', 'Editar modelo')
+
+        @section('content')
+            <h1>Editar modelo</h1>
+            <form action="{{ route('modelos.update', $modelo) }}" method="POST">
+                @csrf
+                @method('put')
+                <label>Propiedad 1</label>
+                <input type="text" name="propiedad1" value="{{ old('propiedad1', $modelo->propiedad1) }}" />
+                @error('propiedad1')
+                    {{ $message }}
+                @enderror
+                <button type="submit">Actualizar</button>
+            </form>
+        @endsection
+        ```
 
 ## Blade
 + Construcción de plantillas Blade
@@ -99,10 +296,23 @@
             return view('mi_vista', compact('parametro'));
         }
         // ...
-    }    
+    }
+    ```
++ Ejemplo de directiva **foreach**:
+    ```php
+    <!-- ... -->
+    <ul>
+        @foreach($modelos as $modelo)
+            <li>Propiedad 1: {{ $modelo->propiedad1 }}</li>
+        @endforeach
+    </ul>
+    <!-- Si el controlador envía los registros paginados -->
+    {{ $modelos->link() }}
+    <!-- ... -->
     ```
 
-## Migración
+
+## Migraciones
 + Documentación: https://laravel.com/docs/10.x/migrations
 + Nombre de ejemplo de un archivo de migración y los posibles tipos de campos a definir:
     + Nombre: database\migrations\2014_10_12_000000_create_users_table.php
@@ -190,6 +400,35 @@
         protected $table = "modelos";
     }
     ```
++ Definir asignación masiva (indicando los campos a considerar):
+    ```php
+    // ...
+    class Modelo extends Model {
+        // ...
+        protected $fillable = [
+            'propiedad1'
+        ];
+    }
+    ```
++ Definir asignación masiva (indicando los campos a no considerar):
+    ```php
+    // ...
+    class Modelo extends Model {
+        // ...
+        protected $guarded = [
+            'propiedad1'
+        ];
+    }
+    ```
++ Definir asignación masiva (indicando todos los campos):
+    ```php
+    // ...
+    class Modelo extends Model {
+        // ...
+        protected $guarded = [];
+    }
+    ```
+
 
 ## Tinker
 + Ejecutar Tinker:
@@ -209,6 +448,66 @@
 + Modificar un registro
     + >>> $modelo->propiedad = 'otro valor';
     + >>> $modelo->save();
++ Recuperar todos los registros de una tabla:
+    + >>> $modelos = Modelo::all();
++ Recuperar todos los registros de una tabla aplicando un filtro:
+    + >>> $modelos = Modelo::where('propiedad1', 'valor1')->get();
++ Recuperar todos los registros de una tabla aplicando un filtro y un orden:
+    + >>> $modelos = Modelo::where('propiedad1', 'valor1')->orderBy('propiedad2', 'desc')->get();
+    + **Nota:** por defecto **orderBy** ordena de manera ascendente: **asc**.
++ Recuperar el primer registro:
+    + >>> $modelos = Modelo::where('propiedad1', 'valor1')->orderBy('propiedad2', 'desc')->first();
++ Recuperar solo los campos **propiedad1** y **propiedad2**:
+    + >>> $modelos = Modelo::select('propiedad1', 'propiedad2')->get();
+    + >>> $modelos = Modelo::select('propiedad1', 'propiedad2')->orderBy('propiedad2')->where('propiedad1', 'valor1')->get();
++ Recuperar solo los campos **propiedad1** y **propiedad2** usando alias:
+    + >>> $modelos = Modelo::select('propiedad1 as p1', 'propiedad2 as p2')->get();
++ Recuperar solo 5 registros:
+    + >>> $modelos = Modelo::select('propiedad1 as p1', 'propiedad2 as p2')->take(5)->get();
++ Recuperar un registro con **id** = 3:
+    + >>> $modelos = Modelo::find(3);
++ Recuperar todos los registros con **id** > 3:
+    + >>> $modelos = Modelo::where('id', '>', 3)->get();
+    + **Nota:** operadores de comparación que se pueden usar:
+        + Igual: =
+        + Mayor: >
+        + Mayor o igual: >=
+        + Menor: <
+        + Menor o igual: <=
+        + Diferente: <>
+        + Que contenga: LIKE
++ Recuperar todos los registros que contenga el texto **texto** en cualquier parte del campo:
+    + >>> $modelos = Modelo::where('propiedad3', 'LIKE', '%texto%')->get();
+
+## Eloquent:
++ Pasar todos los registros:
+    ```php
+    // ...
+    class NombreController extends Controller
+    {
+        // ...
+        public function mi_vista() {
+            $modelos = Modelo::all();
+            return view('mi_vista', compact('modelos'));
+        }
+        // ...
+    }
+    ```
++ Pasar registros paginados:
+    ```php
+    // ...
+    class NombreController extends Controller
+    {
+        // ...
+        public function mi_vista() {
+            $modelos = Modelo::paginate();  // Por defecto envía 15 registros
+            return view('mi_vista', compact('modelos'));
+        }
+        // ...
+    }
+    ```
+    + **Nota 1:** para navegar entre lotes de registros en la dirección del navegador podemos escribir algo así:
+        + http://miaplicacion.test/modelos?page=[numero]
 
 ## Seeder
 + Programar seeder en **database\seeders\DatabaseSeeder.php**:
@@ -327,3 +626,186 @@
                 }
             }    
             ```
+
+## Mutadores y accesores:
+1. Agregar un mutador y un accesor a el modelo **Modelo**:
+    + Modificar el modelo **app\Models\Modelo.php**:
+        ```php
+        // ...
+        use Illuminate\Database\Eloquent\Casts\Attribute;
+
+        class Modelo extends Model
+        {
+            // ...
+            // Definir método para administrar el mutador y el accesor
+            // El método debe recibir el nombre del atributo que se desea modificar
+            // Usando la forma tradicional
+            protected function propiedad1(): Attribute {
+                return new Attribute(
+                    // Accesor
+                    get: function($value) {
+                        // retornar el valor aplicando la transformación deseada
+                        return ucwords($value);
+                    },
+                    // Mutador
+                    set: function($value) {
+                        // retornar el valor aplicando la transformación deseada
+                        return strtolower($value);
+                    }
+                );
+            }
+
+            // Definir método para administrar el mutador y el accesor
+            // El método debe recibir el nombre del atributo que se desea modificar
+            // Usando funciones flecha
+            protected function propiedad2(): Attribute {
+                return new Attribute(
+                    // Accesor
+                    get: fn($value) => ucwords($value),
+                    // Mutador
+                    set: fn($value) => strtolower($value)
+                );
+            }
+
+            // Definir método para administrar el mutador y el accesor
+            // El método debe recibir el nombre del atributo que se desea modificar
+            // Usando la forma antigua
+            // Accesor
+            protected function getPropiedad3Attribute($value) {
+                return  ucwords($value);
+            }
+            // Mutador
+            protected function setPropiedad3Attribute($value) {
+                $this->attributes['propiedad3'] = strtolower($value);
+            }
+        }
+        ```
+
+## Form Request:
++ Crear un Form Request:
+    + $ php artisan make:request StoreModelo
+    + **Nota:** se genera el archivo **app\Http\Requests\StoreModelo.php**.
+    + Ejemplo de programación del Form Request **app\Http\Requests\StoreModelo.php**:
+        ```php
+        // ...
+        class StoreModelo extends FormRequest
+        {
+            // ...
+            public function authorize(): bool
+            {
+                return true;
+            }
+
+            // ...
+            public function rules(): array
+            {
+                return [
+                    'propiedad1' => 'required|min:12'
+                ];
+            }
+
+            // Método para personalizar los mensaje de error
+            public function messages(): array
+            {
+                return [
+                    'propiedad1.required' => 'La propiedad 1 es obligatoria'
+                ];
+            }
+
+            // Método para personalizar los atributos
+            public function attributes(): array
+            {
+                return [
+                    'propiedad1' => 'Cambio de nombre'
+                ];
+            }
+        }        
+        ```
+    + Ejemplo de uso en el controlador que lo invoca **app\Http\Controllers\ModeloController.php**:
+        ```php
+        // ...
+        public function store(StoreModelo $request) {
+
+            $modelo = new Modelo();
+            $modelo->propiedad1 = $request->propiedad1;
+            $modelo->save();
+            return redirect()->route('modelos.show', $modelo);
+        }
+        // ...   
+        ```
+
+## Configuración
++ Configurar proyecto al español:
+    + Editar **config\app.php**:
+        ```php
+        // ...
+        return [
+            // ...
+            'locale' => 'es',
+            // ...
+        ];        
+        ```
+
+## Publicar recursos de Laravel:
++ Publicar idiomas:
+    + $ php artisan lang:publish
+    + **Nota:** para traducir los mensajes al español, crear carpeta **es** y copiar traducidos al español los archivos contenidos en **en**.
+
+## Tailwind
++ Documentación: https://tailwindcss.com/docs/installation
++ Incluir CDN de tailwind en la plantilla principal **resources\views\layouts\mi_plantilla.blade.php**:
+    ```php
+    <!-- ... -->
+    <head>
+        <!-- ... -->
+        <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+    <!-- ... -->
+    ```
+
+## Algunas funciones php:
+```php
+// Encriptar contraseña:
+$password = bcrypt($request->password);
+// Transforma a título
+$minuscula = ucwords('pEdRo');      // regresa: Pedro
+// Transforma a mínusculas
+$minuscula = strtolower('pEdRo');    // regresa: pedro
+```
+
+## Crear un virtual host:
++ Para el lado del cliente, modificar **C:\Windows\System32\drivers\etc\hosts**
+    ```
+    # Host virtual Mi proyecto - lado del cliente
+    127.0.0.1	miproyecto.test
+    ```
+    + **Nota**: Editar con el block de notas en modo de administrador.
++ Para el lado del servidor, modificar **C:\xampp\apache\conf\extra\httpd-vhosts.conf**
+    ```
+    # Agregar esta línea una única vez
+    <VirtualHost *>
+        DocumentRoot "C:\xampp\htdocs"
+        ServerName localhost
+    </VirtualHost>
+
+    # Host virtual Mi proyecto - lado del servidor
+    <VirtualHost *>
+        DocumentRoot "C:\xampp\htdocs\miproyecto\public"
+        ServerName miproyecto.test
+        <Directory "C:\xampp\htdocs\miproyecto\public">
+            Options All
+            AllowOverride All
+            Require all granted
+        </Directory>
+    </VirtualHost>
+    ```
+    + **Nota**: En el archivo **C:\xampp\apache\conf\httpd.conf** las líneas:
+    ```
+    Include conf/extra/httpd-vhosts.conf
+    ```
+    y
+    ```
+    LoadModule rewrite_module modules/mod_rewrite.so
+    ```
+    no deben estar comentada con #.
++ Reiniciar el servidor Apache.
