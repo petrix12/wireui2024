@@ -1,7 +1,9 @@
 <?php
 
+use App\Mail\CorreoMailable;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 /*
 |--------------------------------------------------------------------------
@@ -63,4 +65,15 @@ Route::get('/wireui/dropdown', function () {
 
 Route::get('/wireui/modal', function () {
     return view('wireui.modal');
-})->name('modal');   
+})->name('modal');
+
+Route::get('correo', function() {
+    Mail::to('mi.correo1@correo.com')
+        ->send(new CorreoMailable([
+            'from_email' => 'mi.correo1@correo.com', 
+            'from_name' => 'Mi nombre', 
+            'asunto' => 'asunto', 
+            'message' => 'mensaje...'
+        ]));
+    return 'correo enviado';
+});

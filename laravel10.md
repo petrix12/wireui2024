@@ -35,6 +35,9 @@
         + $ composer create-project laravel/laravel mi_proyecto_laravel
     + Vía instalador de Laravel:
         + $ laravel new mi_proyecto_laravel
++ Crear un proyecto con Jetstream desde el instalador de Laravel:
+    + $ laravel new mi_proyecto_laravel --jet
+
 
 ## Rutas
 + Estructura de una ruta:
@@ -187,6 +190,26 @@
             }
         }        
         ```
++ Emitir una variable de sesión (forma 1):
+    ```php
+    // ...
+    public function destroy(Modelo $modelo) {
+        $modelo->delete();
+        session()->flash('info', 'El modelo ha sido eliminado');
+        return redirect()->route('modelos.index');
+    }
+    // ...
+    ```
++ Emitir una variable de sesión (forma 2):
+    ```php
+    // ...
+    public function destroy(Modelo $modelo) {
+        $modelo->delete();
+        return redirect()->route('modelos.index')->with('info', 'El modelo ha sido eliminado');
+    }
+    // ...
+    ```
+
 
 ## Vistas
 + Ejemplos de vistas para un CRUD:
@@ -264,6 +287,30 @@
             </form>
         @endsection
         ```
++ Resivir una variable de sesión:
+    + resources/views/crud/modelos/index.blade.php
+        ```php
+        @extends('layouts.mi_plantilla')
+
+        @section('title', 'Lista modelos')
+
+        @section('content')
+            <h1>Lista modelos</h1>
+            @if(session('info'))
+                <script>
+                    alert("{{ session('info') }}");
+                </script>
+            @endif
+            <ul>
+                @foreach($modelos as $modelo)
+                    <li>Propiedad 1: {{ $modelo->propiedad1 }}</li>
+                @endforeach
+            </ul>
+            <!-- Si el controlador envía los registros paginados -->
+            {{ $modelos->link() }}
+        @endsection
+        ```
+
 
 ## Blade
 + Construcción de plantillas Blade
@@ -751,6 +798,93 @@
         ];        
         ```
 
+## Mailables
++ Indicar credenciales del servicio de correos a utilizar en **.env**:
+    + Ejemplo:
+        ```env
+        MAIL_MAILER=smtp
+        MAIL_HOST=mailpit
+        MAIL_PORT=1025
+        MAIL_USERNAME=null
+        MAIL_PASSWORD=null
+        MAIL_ENCRYPTION=null
+        MAIL_FROM_ADDRESS="hello@example.com"
+        MAIL_FROM_NAME="${APP_NAME}"        
+        ```
++ Crear un mailable:
+    + $ php artisan make:mail CorreoMailable
+    + **Nota:** esta acción crea el siguiente archivo: **app\Mail\CorreoMailable.php**,.
++ Crear vista del correo **resources\views\emails\correo.blade.php**:
+    ```php
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Correo</title>
+    </head>
+    <body>
+        <h1>Correo</h1>
+        <p>{{ $data['message'] }}</p>
+    </body>
+    </html>
+    ```
+    + **Nota:** si para el correo se usan estilos bootstrap, tailwind, etc, será necesario escribir los estilos en el mismo correo.
++ Modificar **app\Mail\CorreoMailable.php**:
+    ```php
+    // ...
+    use Illuminate\Mail\Mailables\Address;
+
+    class CorreoMailable extends Mailable
+    {
+        // ...
+        public $data;
+
+        // ...
+        public function __construct($data)
+        {
+            $this->data = $data;
+        }
+        // ...
+        public function envelope(): Envelope
+        {
+            return new Envelope(
+                from: new Address($this->data['from_email'], $this->data['from_name']),
+                subject: $this->data['asunto']
+            );
+        }
+        // ...
+        public function content(): Content
+        {
+            return new Content(
+                view: 'emails.correo'
+            );
+        }
+        // ...
+    }
+    ```
++ Ejemplo de invocación del correo:
+    ```php
+    // ...
+    use App\Mail\CorreoMailable;
+    use Illuminate\Support\Facades\Mail;
+    // ...
+    $data = [
+        'from_email' => 'mi.correo1@correo.com', 
+        'from_name' => 'Mi nombre', 
+        'asunto' => 'asunto', 
+        'message' => 'mensaje...'
+    ]
+
+    Mail::to('mi.correo1@correo.com')->send(new CorreoMailable($data));
+
+    // Otra forma:
+    $correo = new \App\Mail\CorreoMailable($data);
+    \Illuminate\Support\Facades\Mail::to('mi.correo1@correo.com')->bcc('mi.correo2@correo.com')->send($correo);
+    ```
+
+
 ## Publicar recursos de Laravel:
 + Publicar idiomas:
     + $ php artisan lang:publish
@@ -767,6 +901,12 @@
     </head>
     <!-- ... -->
     ```
+
+## Algunos comandos artisan:
++ Levantar un servidor web local:
+    + $ php artisan serve
++ Crear un enlace simbólico o acceso directo a el storage de la aplicación:
+    + $ php artisan storage:link
 
 ## Algunas funciones php:
 ```php
