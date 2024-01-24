@@ -884,11 +884,108 @@
     \Illuminate\Support\Facades\Mail::to('mi.correo1@correo.com')->bcc('mi.correo2@correo.com')->send($correo);
     ```
 
+## Componentes
++ Crear un componente blade anónimo:
+    + Crear archivo **resources\views\components\componente.blade.php**:
+        ```php
+        @props(['title', 'clase' => 'clase2', 'variable2'])
+
+        @php
+            switch($clase) {
+                case 'clase1':
+                    $clases = "bg-blue-100";
+                    break;
+                case 'clase2':
+                    $clases = "bg-red-100";
+                    break;
+                default:
+                    $clases = "bg-black-100";
+                    break;
+            }
+        @endphp
+
+        <div {{ $attributes->merge(['class' => 'm-5' ]) }}>
+            <h1 class="fs-2 {{ $clases }}">{{ $title }}</h1>
+            <p>{{ $otravariable }}</p>
+            <p>{{ $variable2 }}</p>
+            <p>
+                {{ $slot }} {{-- Aquí enviaremos por parámetro el contenido principal de mi componente --}}
+            </p>
+            {{-- En la variable attributes se almacenan todas las variables que no se rescatan en los props o en los slut --}}
+            <p>{{ $attributes }}</p>
+        </div>    
+        ```
+        + **Nota:** para ver el componente, en la vista que lo invoca, escribir:
+            ```php
+            @php
+                $variable = 'Valor de la variable';
+            @endphp
+
+            <x-componente title="Título del componente" clase="clase1" :variable2="$variable" id="mi_id">
+                <x-slot name="otravariable">
+                    Contenido de mi otra variable
+                </x-slot>
+                Contenido principal del componente
+            </x-componente>
+            ```
++ Crear un componente blade de clase:
+    + Ejecutar:
+        + $ php artisan make:component ComponenteClase
+        + **Nota:** crea dos archivos:
+            + Lógica: app\View\Components\ComponenteClase.php
+            + Vista: resources\views\components\componente-clase.blade.php
+    + Diseñar vista del componente:
+        ```php
+        <div {{ $attributes->merge(['class' => 'm-5' ]) }}>
+            <h1 class="fs-2 {{ $clases }}">{{ $title }}</h1>
+            <p>{{ $otravariable }}</p>
+            <p>{{ $variable2 }}</p>
+            <p>
+                {{ $slot }} {{-- Aquí enviaremos por parámetro el contenido principal de mi componente --}}
+            </p>
+            {{-- En la variable attributes se almacenan todas las variables que no se rescatan en los props o en los slut --}}
+            <p>{{ $attributes }}</p>
+        </div>        
+        ```
+    + Programar lógica del componente:
+        ```php
+        // ...
+        class ComponenteClase extends Component
+        {
+            public $title;
+            public $clases;
+            public $variable2;
+            // ...
+            public function __construct($title, $clase = 'clase1', $variable2)
+            {
+                switch($clase) {
+                    case 'clase1':
+                        $clases = "bg-blue-100";
+                        break;
+                    case 'clase2':
+                        $clases = "bg-red-100";
+                        break;
+                    default:
+                        $clases = "bg-black-100";
+                        break;
+                }
+
+                $this->title = $title;
+                $this->clases = $clases;
+                $this->variable2 = $variable2;
+            }
+            // ...
+        }
+        ```
+    + Se invoca como el componente anónimo.
+
 
 ## Publicar recursos de Laravel:
 + Publicar idiomas:
     + $ php artisan lang:publish
     + **Nota:** para traducir los mensajes al español, crear carpeta **es** y copiar traducidos al español los archivos contenidos en **en**.
++ Publicar vistas de componentes Jetstream:
+    + 
 
 ## Tailwind
 + Documentación: https://tailwindcss.com/docs/installation
