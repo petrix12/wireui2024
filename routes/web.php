@@ -77,3 +77,16 @@ Route::get('correo', function() {
         ]));
     return 'correo enviado';
 });
+
+// Middleware
+Route::get('prueba', function() {
+    return "Has accedido correctamente a esta ruta";
+})->middleware('prueba');
+
+Route::get('prueba2', function() {
+    return "Has accedido correctamente a esta ruta";
+})->middleware(['prueba', 'auth:sanctum']);
+
+Route::get('noautorizado', function() {
+    return "No estas autorizado para acceder a esta ruta";
+});

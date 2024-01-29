@@ -377,12 +377,26 @@
                 $table->id();                                           // Crea la columna id
                 $table->string('name', 150);
                 $table->string('email')->unique();
-                $table->texto('descripción');
+                $table->text('descripcion');
+                $table->longText('descripcion_muy_larga');
                 $table->timestamp('email_verified_at')->nullable();
                 $table->string('password');
                 $table->rememberToken();                                // Crea la columna remember_token
                 $table->foreignId('current_team_id')->nullable();
                 $table->string('profile_photo_path', 2048)->nullable();
+
+                // Restricciones de llave foranea con set null
+                $table->unsignedBigInteger('modelo_id')->nullable();
+                $table->foreign('modelo_id')
+                    ->rerferences('id')->on('modelos')
+                    ->onDelete('set null');
+
+                // Restricciones de llave foranea con cascade
+                $table->unsignedBigInteger('otro_modelo_id');
+                $table->foreign('otro_modelo_id')
+                    ->rerferences('id')->on('otro_modelos')
+                    ->onDelete('cascade');
+
                 $table->timestamps();                                   // Crea las columnas created_at y updated_at
             });
         }
@@ -395,6 +409,8 @@
 + Crear migración siguiendo las convenciones de Laravel:
     + $ php artisan make:migration create_nombretabla_table
     + **Nota:** al usar esta convención se crean las estructuras de los métodos **up** y **down** en el archivo de la migración.
++ Crear migración siguiendo las convenciones de Laravel para una tabla auxiliar:
+    + $ php artisan make:migration create_nombretabla1_nombretabla2_table   (escribir en orden alfabético)
 + Revertir cambios de la última migración:
     + $ php artisan migrate:rollback
 + Revertir todos los cambios y volver a ejecutar las migraciones (elimina la tabla sin ejecutar el método **down**):
@@ -442,8 +458,13 @@
         ```
 
 ## Modelos:
-+ Para crear solamente un modelo:
++ Crear un modelo:
     + $ php artisan make:model Modelo
+    + $ php artisan make:model Modelo -m        (con migración)
+    + $ php artisan make:model Modelo -mc       (con migración y controlador)
+    + $ php artisan make:model Modelo -mcs      (con migración, controlador y seeder)
+    + $ php artisan make:model Modelo -mcsf     (con migración, controlador, seeder y factory)
+    + $ php artisan make:model Modelo -a        (con migración, controlador, seeder y factory)
 + Indicar a un modelo la tabla a administrar:
     ```php
     // ...
@@ -478,6 +499,102 @@
     class Modelo extends Model {
         // ...
         protected $guarded = [];
+    }
+    ```
++ Establecer ralación 1:1 de **Modelo** a **OtroModelo**:
+    ```php
+    // ...
+    class Modelo extends Model {
+        // ...
+        // Forma manual
+        public function otro_modelo() {
+            $otro_modelo = OtroModelo::where('modelo_id', $this->id)->first();
+            return $otro_modelo;
+        }
+
+        // Forma simplificada, es funcionalmente igual a la anterior
+        // Este método considera que la llave primaria del Modelo modelo es 'id', 
+        // y la llave foránea de OtroModelo es modelo_id
+        public function otro_modelo_forma2() {
+            return $this->hasOne('App\Models\OtroModelo');
+        }
+
+        // Forma simplificada, sin seguir las convenciones de laravel
+        // Este método considera que la llave primaria del Modelo modelo no sigue las convenciones
+        // y la llave foránea de OtroModelo tampoco sigue las convenciones
+        public function otro_modelo_forma3() {
+            return $this->hasOne('App\Models\OtroModelo', 'modelo_id', 'id');
+        }
+    }
+    ```
++ Establecer ralación 1:1 inversa de **OtroModelo** a **Modelo**:
+    ```php
+    // ...
+    class OtroModelo extends Model {
+        // ...
+        // Forma manual
+        public function modelo() {
+            $modelo = Modelo::find($this->modelo_id);
+            return $modelo;
+        }
+
+        // Forma simplificada, es funcionalmente igual a la anterior
+        public function modelo2() {
+            return $this->belongsTo('App\Models\Modelo');
+        }
+    }
+    ```
++ Establecer ralación 1:n de **OtroModelo** a **Modelo**:
+    ```php
+    // ...
+    class Modelo extends Model {
+        // ...
+        // Forma simplificada
+        public function otro_modelos() {
+            return $this->hasMany('App\Models\OtroModelo');
+        }
+    }
+    ```
++ Establecer ralación 1:n inversa de **OtroModelo** a **Modelo**:
+    ```php
+    // ...
+    class OtroModelo extends Model {
+        // ...
+        // Forma simplificada
+        public function modelo() {
+            return $this->belongsTo('App\Models\Modelo');
+        }
+    }
+    ```
++ Establecer ralación n:n de **OtroModelo** a **Modelo**:
+    ```php
+    // ...
+    class Modelo extends Model {
+        // ...
+        // Forma simplificada
+        public function otro_modelos() {
+            return $this->belongsToMany('App\Models\OtroModelo');
+        }
+
+        // Ejemplo de código para asignar un valor
+        // $modelo = Modelo::find($modelo_id);
+        // $modelo->otro_modelos()->attach($otro_modelo_id);
+
+        // Ejemplo de código para quitar un valor
+        // $modelo = Modelo::find($modelo_id);
+        // $modelo->otro_modelos()->detach($otro_modelo_id);
+
+        // Ejemplo de código para asignar varios valores
+        // $modelo = Modelo::find($modelo_id);
+        // $modelo->otro_modelos()->attach([$otro_modelo1_id, $otro_modelo2_id]);
+
+        // Ejemplo de código para quitar varios valores
+        // $modelo = Modelo::find($modelo_id);
+        // $modelo->otro_modelos()->detach([$otro_modelo1_id, $otro_modelo2_id]);
+
+        // Ejemplo de código para quitar todos los valores y luego asignar varios valores
+        // $modelo = Modelo::find($modelo_id);
+        // $modelo->otro_modelos()->sync([$otro_modelo1_id, $otro_modelo2_id]);
     }
     ```
 
@@ -978,6 +1095,40 @@
         }
         ```
     + Se invoca como el componente anónimo.
+
+
+## Middlewares:
++ Ejemplo de creación de un middleware:
+    + Crear middleware:
+        + $ php artisan make:middleware MiddlewarePrueba
+        + **Nota:** esta acción crea el middleware en **app\Http\Middleware\MiddlewarePrueba.php**.
+    + Establecer lógica del middleware en **app\Http\Middleware\MiddlewarePrueba.php**:
+        ```php
+        ```
+    + Registrar middleware en **app\Http\Kernel.php**:
+        ```php
+        // ...
+        protected $middlewareAliases = [
+            // ...
+            'prueba' => \App\Http\Middleware\MiddlewarePrueba::class
+        ];
+        // ...        
+        ```
+    + Crear rutas en **wireui2024\routes\web.php** para probar middleware:
+        ```php
+        Route::get('prueba', function() {
+            return "Has accedido correctamente a esta ruta";
+        })->middleware('prueba');
+
+        Route::get('prueba2', function() {
+            return "Has accedido correctamente a esta ruta";
+        })->middleware(['prueba', 'auth:sanctum']);
+
+        Route::get('noautorizado', function() {
+            return "No estas autorizado para acceder a esta ruta";
+        });
+        ```
+
 
 
 ## Publicar recursos de Laravel:
