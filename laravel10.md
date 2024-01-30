@@ -2,7 +2,7 @@
 
 ## Pre-requisitos obligatorios:
 + [XAMPP](https://www.apachefriends.org/es/index.html) o [Laragon](https://laragon.org/index.html).
-+ [Composer](https://getcomposer.org/).
++ [Composer](https://getcomposer.org).
 + [NodeJS](https://nodejs.org).
 
 ## Pre-requisitos recomendados:
@@ -597,6 +597,67 @@
         // $modelo->otro_modelos()->sync([$otro_modelo1_id, $otro_modelo2_id]);
     }
     ```
++ Relaciones polimórficas:
+    + Cuando establezca las relaciones polimórficas del medelo **Tabla** tener en cuenta:
+      + En el modelo **Tabla**:
+          ```php
+          public function tablanable() {
+              return $this->morphTo();
+          }
+          ```
+    + En el modelo **Modelo**:
+        ```php
+        // Relación uno a uno polimórfica
+        public function tabla() {
+            return $this->morphOne('App\Models\Tabla', 'tablaable');
+        }
+
+        // Relación uno a muchos polimórfica
+        public function tablas() {
+            return $this->morphMany('App\Models\Tabla', 'tablaable');   // El 2do parámetro es el nombre del método definido en el modelo Tabla
+        }
+        ```
+    + La tabla **tablas** deberá tener campos similares a:
+        + campo1
+        + campo2
+        + tablaable_id
+        + tablaable_type
+        + **Nota 1:** La clave primaria será una clave compuesta por los campos **tablaable_id** y **tablaable_type**.
+        + **Nota 2:** Ejemplo del archivo de migración:
+            ```php
+            // ...
+            public function up(): void
+            {
+                Schema::create('tablas', function (Blueprint $table) {
+                    $table->string('campo1');
+                    $table->string('campo2');
+                    $table->unsignedBigInteger('tablaable_id');
+                    $table->string('tablaable_type');
+                    // Definición de la llave primaria compuesta
+                    $table->primary(['tablaable_id', 'tablaable_type']);
+                    $table->timestamps();
+                });
+            }
+            // ...
+            ```
+        + **Nota 3:** Creación de registros:
+            + Desde el modelo **Tabla**:
+                ```php
+                Tabla::create([
+                    'campo1' => 'Valor campo 1',
+                    'campo2' => 'Valor campo 2',
+                    'tablaable_id' => $modelo_id,
+                    'tablaable_type' => 'App\Models\Modelo'
+                ]);
+                ```
+            + Desde el modelo **Modelo**:
+                ```php
+                $modelo->tabla()->create([
+                    'campo1' => 'Valor campo 1',
+                    'campo2' => 'Valor campo 2'
+                ]);
+                ```
+
 
 
 ## Tinker
