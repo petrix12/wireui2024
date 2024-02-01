@@ -60,3 +60,71 @@
         + Para ejecutar el proyecto:
             + $ cd mi_proyecto
             + $ npm run serve
+    + Una vez generado el proyecto, se debe tener en cuenta:
+        + El archivo de punto de entrada **mi_proyecto\public\index.html**, llama a:
+        + El archivo principal **mi_proyecto\src\main.js** (**main.ts** o **main.js**, según si utiliza Typescript o Javascript), y este finalmente llama a:
+        + El archivo componente principal **mi_proyecto\src\App.vue**, que es el archivo que desencadenara la llamada del resto de los compoentes de la aplicación:
+            + Forma 1:
+            ```html
+            <template>
+                <ComponenteDesencadenante />
+            </template>
+
+            <script>
+            import { defineComponent } from 'vue';
+            import ComponenteDesencadenante from './components/ComponenteDesencadenante.vue';
+
+            export default defineComponent({
+                name: 'App',                    
+                components: {
+                    ComponenteDesencadenante
+                }
+            });
+            </script>
+
+            <style>
+            /* Código CSS */
+            </style>            
+            ```
+            + Forma 2:
+            ```html
+            <template>
+                <ComponenteDesencadenante />
+            </template>
+
+            <script setup>
+            import ComponenteDesencadenante from './components/ComponenteDesencadenante.vue';
+            </script>
+
+            <style>
+            /* Código CSS */
+            </style>            
+            ```
+
+## Estructura de un compoenten Vue:
++ Estructura general:
+    ```html
+    <template>
+        <div>
+            <!-- Código HTML del componente-->
+            <OtroComponente />
+        </div>
+    </template>
+
+    <script setup>
+    /* Código Javascript */
+    import OtroComponente from './OtroComponente.vue'
+    </script>
+
+    <!-- Si nuestro componente utilizar Typescript -->
+    <!--
+    <script lang="ts" setup>
+    /* Código Javascript */
+    </script>        
+    -->
+
+    <style scoped>
+    /* Código CSS */
+    </style>
+    ```
++ mmm

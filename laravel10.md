@@ -381,6 +381,7 @@
                 $table->longText('descripcion_muy_larga');
                 $table->timestamp('email_verified_at')->nullable();
                 $table->string('password');
+                $table->enum('status', [1, 2])->default(1);
                 $table->rememberToken();                                // Crea la columna remember_token
                 $table->foreignId('current_team_id')->nullable();
                 $table->string('profile_photo_path', 2048)->nullable();
@@ -613,8 +614,21 @@
         }
 
         // Relación uno a muchos polimórfica
+        // El 2do parámetro es el nombre del método definido en el modelo Tabla
         public function tablas() {
-            return $this->morphMany('App\Models\Tabla', 'tablaable');   // El 2do parámetro es el nombre del método definido en el modelo Tabla
+            return $this->morphMany('App\Models\Tabla', 'tablaable');   
+        }
+
+        // Relación muchos a muchos polimórfica
+        // El 2do parámetro es el nombre de la tabla intermedia en singular
+        public function tablas2() {
+            return $this->morphToMany('App\Models\Tabla', 'tablaable');
+        }
+
+        // Relación muchos a muchos inversa polimórficas
+        // El 2do parámetro es el nombre de la tabla intermedia en singular
+        public function tablas3() {
+            return $this->morphedByMany('App\Models\Tabla', 'tablaable');
         }
         ```
     + La tabla **tablas** deberá tener campos similares a:
@@ -623,23 +637,72 @@
         + tablaable_id
         + tablaable_type
         + **Nota 1:** La clave primaria será una clave compuesta por los campos **tablaable_id** y **tablaable_type**.
-        + **Nota 2:** Ejemplo del archivo de migración:
-            ```php
-            // ...
-            public function up(): void
-            {
-                Schema::create('tablas', function (Blueprint $table) {
-                    $table->string('campo1');
-                    $table->string('campo2');
-                    $table->unsignedBigInteger('tablaable_id');
-                    $table->string('tablaable_type');
-                    // Definición de la llave primaria compuesta
-                    $table->primary(['tablaable_id', 'tablaable_type']);
-                    $table->timestamps();
-                });
-            }
-            // ...
-            ```
+        + **Nota 2:** 
+            + Ejemplo del archivo de migración para relaciones polimórficas uno a uno:
+                ```php
+                // ...
+                public function up(): void
+                {
+                    Schema::create('tablas', function (Blueprint $table) {
+                        $table->string('campo1');
+                        $table->string('campo2');
+                        $table->unsignedBigInteger('tablaable_id');
+                        $table->string('tablaable_type');
+                        // Definición de la llave primaria compuesta
+                        $table->primary(['tablaable_id', 'tablaable_type']);
+                        $table->timestamps();
+                    });
+                }
+                // ...
+                ```
+            + Ejemplo del archivo de migración para relaciones polimórficas uno a muchos:
+                ```php
+                // ...
+                public function up(): void
+                {
+                    Schema::create('tablas', function (Blueprint $table) {
+                        $table->id();
+                        $table->string('campo1');
+                        $table->string('campo2');
+                        $table->unsignedBigInteger('tablaable_id');
+                        $table->string('tablaable_type');
+                        $table->timestamps();
+                    });
+                }
+                // ...
+                ```
+            + Ejemplo del archivo de migración para relaciones polimórficas uno a muchos:
+                ```php
+                // ...
+                public function up(): void
+                {
+                    Schema::create('tablas', function (Blueprint $table) {
+                        $table->id();
+                        $table->string('campo1');
+                        $table->string('campo2');
+                        $table->timestamps();
+                    });
+                }
+                // ...
+                ```
+                + En este caso hay que generar una tabla intermedia:
+                    + $ php artisan make:migration create_tablaables_table
+                    + Ejemplo de construcción de la migración:
+                        ```php
+                        // ...
+                        public function up(): void
+                        {
+                            Schema::create('tablaables', function (Blueprint $table) {
+                                $table->id();
+                                $table->unsignedBigInteger('tablaable_id');
+                                $table->string('tablaable_type');
+                                $table->unsignedBigInteger('tabla_id');
+                                $table->foreign('tabla_id')->references('id')->on('tablas')->onDelete('cascade');
+                                $table->timestamps();
+                            });
+                        }
+                        // ...
+                        ```
         + **Nota 3:** Creación de registros:
             + Desde el modelo **Tabla**:
                 ```php
