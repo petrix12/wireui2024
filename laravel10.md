@@ -846,6 +846,9 @@
     ```php
     // ...
     use Illuminate\Database\Seeder;
+    use Illuminate\Support\Facades\Storage;
+    use App\Models\Modelo;
+    use App\Models\Post;
 
     class DatabaseSeeder extends Seeder
     {
@@ -854,6 +857,20 @@
         {
             // ...
             $this->call(ModeloSeeder::class);
+
+            // Llamar a un factory desde el modelo
+            Modelo::factory(8)->create();
+
+            // Ejemplo para tratar imagenes
+            Storage::deleteDirectory('posts');
+            Storage::makeDirectory('posts');
+            $posts = Post::factory(100)->create();
+            foreach($post as $post) {
+                Image::factory(1)->create([
+                    'imageable_id' => $post->id,
+                    'imageable_type' => Post::class
+                ]);
+            }
         }
     }    
     ```
@@ -872,16 +889,30 @@
         ```php
         // ...
         use App\Models\Modelo;
+        use App\Models\OtroModelo;
+        use Illuminate\Support\Str;
         // ...
         class ModeloFactory extends Factory
         {
             // ...
             public function definition(): array
             {
+                $propiedad4 = $this->faker->unique->word(20),   // Una palabra de máximo 20 caracteres que no se repite
                 return [
                     'propiedad1' => $this->faker->sentence(),   // Oración
                     'propiedad2' => $this->faker->paragraph(),  // Párrafo                    
-                    'propiedad3' => $this->faker->randomElement(['Valor 1', 'Valor 2', 'Valor 3'])   // Escoger entre varios elementos
+                    'propiedad3' => $this->faker->randomElement(['Valor 1', 'Valor 2', 'Valor 3']),   // Escoger entre varios elementos
+                    'propiedad4' => $propiedad4,
+                    'propiedad5' => Str::slug($propiedad4),
+                    'propiedad6' => $this->faker->text(300),   // Texto de 300 caracteres
+                    'propiedad7' => OtroModelo::all()->random()->id,   // Escoger al azar un id del modelo OtroModelo
+                    // Parámetros: ruta, ancho, alto, catergoria (ya no funciona, ruta_completa)
+                    // Si ruta_completa es:
+                    // true: //public/storage/img/imagen.jpg
+                    // false: /imagen.jpg
+                    'propiedad8' => $this->faker->image('public/storage/img', 640, 480, null, true)
+
+
                 ];
             }
         }        
@@ -1253,6 +1284,40 @@
         });
         ```
 
+## Crear una vista markdown:
+1. Instalar la dependencia:
+    + $ composer require graham-campbell/markdown
+2. Crear una vista para renderizar el archivo markdown **resources\views\markdown.blade.php**:
+    ```php
+    {{-- Puedes incluir estilos CSS específicos para Markdown si lo deseas --}}
+    <style>
+        /* Estilos CSS específicos para el contenido Markdown */
+    </style>
+
+    {{-- Mostrar el contenido HTML rendereado --}}
+    {!! $htmlContent !!}    
+    ```
+3. Crear una vista markdown **public\markdown.md**.
+4. Ejemplo del llamado de un archivo markdown en **routes\web.php**:
+    ```php
+    // ...
+    use GrahamCampbell\Markdown\Facades\Markdown;
+    use Illuminate\Support\Facades\File;
+    // ...
+    Route::get('markdown', function () {
+        // Ruta al archivo Markdown
+        $filePath = public_path('markdown.md');
+
+        // Leer el contenido del archivo
+        $markdownContent = File::get($filePath);    
+
+        // Convertir Markdown a HTML usando la fachada Markdown
+        $htmlContent = Markdown::convertToHtml($markdownContent);
+
+        // Pasar el contenido HTML a la vista
+        return view('markdown')->with('htmlContent', $htmlContent);
+    });    
+    ```
 
 
 ## Publicar recursos de Laravel:

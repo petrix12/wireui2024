@@ -1,8 +1,10 @@
 <?php
 
 use App\Mail\CorreoMailable;
+use GrahamCampbell\Markdown\Facades\Markdown;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
 
 /*
@@ -89,4 +91,20 @@ Route::get('prueba2', function() {
 
 Route::get('noautorizado', function() {
     return "No estas autorizado para acceder a esta ruta";
+});
+
+
+Route::get('markdown', function () {
+    // Ruta al archivo Markdown
+    //$filePath = public_path('ruta/del/archivo.md');
+    $filePath = public_path('markdown.md');
+
+    // Leer el contenido del archivo
+    $markdownContent = File::get($filePath);    
+
+    // Convertir Markdown a HTML usando la fachada Markdown
+    $htmlContent = Markdown::convertToHtml($markdownContent);
+
+    // Pasar el contenido HTML a la vista
+    return view('markdown')->with('htmlContent', $htmlContent);
 });

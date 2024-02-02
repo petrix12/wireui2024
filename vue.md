@@ -64,7 +64,7 @@
         + El archivo de punto de entrada **mi_proyecto\public\index.html**, llama a:
         + El archivo principal **mi_proyecto\src\main.js** (**main.ts** o **main.js**, según si utiliza Typescript o Javascript), y este finalmente llama a:
         + El archivo componente principal **mi_proyecto\src\App.vue**, que es el archivo que desencadenara la llamada del resto de los compoentes de la aplicación:
-            + Forma 1:
+            + Option API:
             ```html
             <template>
                 <ComponenteDesencadenante />
@@ -86,7 +86,7 @@
             /* Código CSS */
             </style>            
             ```
-            + Forma 2:
+            + Composition API:
             ```html
             <template>
                 <ComponenteDesencadenante />
@@ -102,7 +102,57 @@
             ```
 
 ## Estructura de un compoenten Vue:
-+ Estructura general:
++ Estructura general Option API:
+    ```html
+    <template>
+        <div>
+            <!-- Código HTML del componente-->
+            <h2>{{ dato1 }}</h2>
+            <button @click="metodo_prueba">Prueba</button>
+
+            <OtroComponente />
+        </div>
+    </template>
+
+    <script>
+    /* Código Javascript */
+    import { defineComponent } from 'vue';
+    import OtroComponente from './OtroComponente.vue'
+
+    export default defineComponent({
+        name: 'NombreComponente',
+
+        components: {
+            OtroComponente
+        },
+        
+        data() {
+            let dato1 = 'Prueba';
+            return {
+                dato1
+            }
+        },
+
+        methods: {
+            metodo_prueba() {
+                this.dato1. = 'Otro valor';
+            }
+        }
+    });
+    </script>
+
+    <!-- Si nuestro componente utilizar Typescript -->
+    <!--
+    <script lang="ts" setup>
+    /* Código Javascript */
+    </script>        
+    -->
+
+    <style scoped>
+    /* Código CSS */
+    </style>
+    ```
++ Estructura general Composition API:
     ```html
     <template>
         <div>
