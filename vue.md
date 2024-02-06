@@ -121,6 +121,7 @@
 
     export default defineComponent({
         name: 'NombreComponente',
+        props: {},
 
         components: {
             OtroComponente
@@ -132,6 +133,10 @@
                 dato1
             }
         },
+
+        mounted() {},
+
+        computed: {},
 
         methods: {
             metodo_prueba() {
@@ -157,13 +162,32 @@
     <template>
         <div>
             <!-- Código HTML del componente-->
+            <h2>{{ dato1 }}</h2>
+            <button @click="metodo_prueba">Prueba</button>
+
             <OtroComponente />
         </div>
     </template>
 
-    <script setup>
+    <script>
     /* Código Javascript */
-    import OtroComponente from './OtroComponente.vue'
+    import { defineComponent, ref } from 'vue';
+    import OtroComponente from './OtroComponente.vue';
+
+    export default defineComponent({
+        name: 'NombreComponente',
+
+        setup() {
+            let dato1 = ref('Prueba');
+            const metodo_prueba = () => {
+                dato1.value = 'Otro valor';
+            }
+            return {
+                dato1,
+                metodo_prueba
+            }
+        }
+    });
     </script>
 
     <!-- Si nuestro componente utilizar Typescript -->
@@ -177,4 +201,163 @@
     /* Código CSS */
     </style>
     ```
-+ mmm
++ Estructura general Composition API (con Typescript):
+    ```html
+    <template>
+        <div>
+            <!-- Código HTML del componente-->
+            <h2>{{ dato1 }}</h2>
+            <button @click="metodo_prueba">Prueba</button>
+
+            <OtroComponente />
+        </div>
+    </template>
+
+    <script lang="ts">
+    /* Código Javascript */
+    import { defineComponent, Ref, ref } from 'vue';
+    import OtroComponente from './OtroComponente.vue';
+
+    export default defineComponent({
+        name: 'NombreComponente',
+
+        setup() {
+            interface DatoObjeto {
+                clave1: string,
+                clave2: string
+            };
+            let dato1:Ref = ref('Prueba');
+            let array1:Ref<Array<string>> = ref(['valor 1', 'valor 2', 'valor 3']);
+            let array2:Ref<Array<DatoObjeto>> = ref([
+                {clave1: 'valor 1 de la clave 1', clave2: 'valor 1 de la clave 2'}, 
+                {clave1: 'valor 2 de la clave 1', clave2: 'valor 2 de la clave 2'}
+            ]);
+            const metodo_prueba = ():void => {
+                dato1.value = 'Otro valor';
+            }
+            return {
+                dato1,
+                metodo_prueba
+            }
+        }
+    });
+    </script>
+
+    <!-- Si nuestro componente utilizar Typescript -->
+    <!--
+    <script lang="ts" setup>
+    /* Código Javascript */
+    </script>        
+    -->
+
+    <style scoped>
+    /* Código CSS */
+    </style>
+    ```
++ Estructura general Composition API (con setup en el script):
+    ```html
+    <template>
+        <div>
+            <!-- Código HTML del componente-->
+            <h2>{{ dato1 }}</h2>
+            <button @click="metodo_prueba">Prueba</button>
+
+            <OtroComponente />
+        </div>
+    </template>
+
+    <script lang="ts" setup>
+    /* Código Javascript */
+    import { Ref, ref } from 'vue';
+    import OtroComponente from './OtroComponente.vue';
+
+    let dato1:Ref = ref('Prueba');
+    const metodo_prueba = ():void => {
+        dato1.value = 'Otro valor';
+    }
+    </script>
+
+    <!-- Si nuestro componente utilizar Typescript -->
+    <!--
+    <script lang="ts" setup>
+    /* Código Javascript */
+    </script>        
+    -->
+
+    <style scoped>
+    /* Código CSS */
+    </style>
+    ```
+
+## Directivas:
++ Selectivo **v-if**:
+    ```html
+    <!-- ... -->
+    <div v-if="condicion">
+        <!-- Código si se cumple condicion -->
+    </div>
+    <div v-else-if="condicion2">
+        <!-- Código si se cumple condicion2 -->
+    </div>
+    <div v-else>
+        <!-- Código si no se cumple condicion ni condicion2 -->
+    </div>
+    <!-- ... -->
+    ```
+    + **Nota:** el **v-if** no dibuja en el virtual DOM las condiciones que no se cumplen.
++ Selectivo **v-show**:
+    ```html
+    <!-- ... -->
+    <div v-show="condicion">
+        <!-- Código si se cumple condicion -->
+    </div>
+    <!-- ... -->
+    ```
+    + **Nota:** el **v-show** dibuja en el virtual DOM las condiciones que no se cumplen y le agrega al tag que lo usa el atributo **style: "display: none;"**.
++ Recorrido de estructuras **v-for**:
+    ```html
+    <!-- ... -->
+    <ul>
+        <li v-for="elemento in elementos" :key="elemento.id">{{ elemento }}</li>
+        <!-- :key tambien se puede escribir como v-bind:key -->
+    </ul>
+    <!-- Usando un index -->
+    <ul>
+        <li v-for="(elemento, index) in elementos" :key="index">{{ elemento }}</li>
+        <!-- :key tambien se puede escribir como v-bind:key -->
+    </ul>
+    <!-- ... -->
+    ```
++ Bindeo **v-bind**:
+    + Bindeo de clases:
+        ```html
+        <!-- ... -->
+        <p v-bind:class="{
+            'mi-clase': condicion 
+        }"
+        >
+            A este texto se le aplicará la clase mi-clase si condicion se cumple
+        </p>
+
+        <!-- forma simplificada -->
+        <p :class="{
+            'mi-clase': condicion 
+        }"
+        >
+            A este texto se le aplicará la clase mi-clase si condicion se cumple
+        </p>
+        <!-- ... -->
+        ```
+    + Bindeo de estilos:
+        ```html
+        <!-- ... -->
+        <p :style="{
+            backgroundColor: variable_bg,
+            'background-color': variable_bg,     // Esta expresión es igual a la anterior
+            color: variable_color
+        }"
+        >
+            A este texto se le aplicará los estilos definidos en style
+        </p>
+        <!-- ... -->
+        ```

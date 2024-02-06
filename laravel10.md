@@ -362,7 +362,32 @@
     {{ $modelos->link() }}
     <!-- ... -->
     ```
-
++ Directivas:
+    + if:
+        ```php
+        @if($condicion)
+            <!-- Se muestra solo si $condicion = true -->
+        @else
+            <!-- Se muestra solo si $condicion = false -->
+        @endif
+        ```
+    + auth:
+        ```php
+        @auth
+            <!-- Se muestra solo si existe un usuario autenticado -->
+        @else
+            <!-- Se muestra solo si no existe un usuario autenticado -->
+        @endauth
+        ```
+    + foreach:
+        ```php
+        @foreach ($elementos as $elemento)
+            {{ $elemento }}
+        @endforeach
+        ```
+        + **Nota:** al usar un foreach se crean algunas variables de interes:
+            + $loop->first (Primero elemento)
+            + $loop->index (Elemento actual, el primero tendrá el valor de cero)
 
 ## Migraciones
 + Documentación: https://laravel.com/docs/10.x/migrations
@@ -1319,6 +1344,16 @@
     });    
     ```
 
+## Livewire:
++ Crear un componente Livewire:
+    + $ php artisan make:livewire componente-livewire
+    + Vista del compoente: resources\views\livewire\componente-livewire.blade.php
+    + Controlador del componente: app\Livewire\ComponenteLivewire.php
+    + Para llamar al componennte desde una vista:
+        ```php
+        @livewire('componente-livewire')
+        ```
++ mm
 
 ## Publicar recursos de Laravel:
 + Publicar idiomas:
