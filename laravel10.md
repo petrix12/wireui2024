@@ -99,9 +99,14 @@
     ```php
     Route::view('mirutaestatica', 'vista');
     ```
-
 + Ver todas las rutas:
     + $ php artisan r:l
++ Llamar una ruta desde una vista:
+    ```php
+    <!-- -->
+    <a href="{{ route('nombre.ruta', $parametros) }}">
+    <!-- -->
+    ```
 
 ## Controladores
 + Crear controlador:
@@ -210,6 +215,13 @@
     // ...
     ```
 
+## Eloquent:
++ Obtener los n últimos registros
+    ```php
+    // $n: número de registros a recuperar
+    $registros = Registro::latest('id')->take($n)->get();
+    ```
++ xxx
 
 ## Vistas
 + Ejemplos de vistas para un CRUD:
@@ -1308,6 +1320,12 @@
             return "No estas autorizado para acceder a esta ruta";
         });
         ```
+
+## Storage:
++ Acceder al storage:
+    ```php
+    <img src="{{ Storage::url($ruta) }}" alt="">
+    ```
 
 ## Crear una vista markdown:
 1. Instalar la dependencia:

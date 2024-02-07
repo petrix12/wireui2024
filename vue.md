@@ -361,3 +361,18 @@
         </p>
         <!-- ... -->
         ```
++ Evento **v-on**:
+    ```html
+    <!-- ... -->
+    <button v-on:click="miEvento()">Ejecutar evento</button>
+    <button @click="miEvento()">Ejecutar evento</button>
+    <!-- ... -->
+    ```
++ Comunicación bidireccional **v-model**:
+    ```html
+    <!-- ... -->
+    <input type="text" v-model="inputText" />
+    <p>{{ inputText }}</p>
+    <!-- ... -->
+    ```
+
