@@ -64,6 +64,9 @@
             Route::get('ruta2', 'metodo2');
             Route::get('ruta3', 'metodo3');
         });
+
+        // Ruta tipo resource
+        Route::resource('ruta', NombreController::class)->names('rutas');
         ```
 + Asignar nombre identificativo a una ruta:
     ```php
@@ -101,6 +104,8 @@
     ```
 + Ver todas las rutas:
     + $ php artisan r:l
++ Ver todas las rutas con un nombre específico:
+    + $ php artisan r:l --name=rutas
 + Llamar una ruta desde una vista:
     ```php
     <!-- -->
@@ -214,6 +219,10 @@
     }
     // ...
     ```
++ Crear un controlador tipo resource:
+    + $ php artisan make:controller NameController -r
+    + **Nota**: este comando genera un controlador con los métodos necesarios para un CRUD:
+        + index, create, store, show, edit, update y destroy.
 
 ## Eloquent:
 + Obtener los n últimos registros
@@ -1327,6 +1336,43 @@
     <img src="{{ Storage::url($ruta) }}" alt="">
     ```
 
+## Provider:
++ Indicar vista con la que se iniciará la aplicación:
+    + Modificar el provider **app\Providers\RouteServiceProvider.php**:
+        ```php
+        // ...
+        class RouteServiceProvider extends ServiceProvider
+        {
+            // ...
+            public const HOME = '/mi_ruta';
+            // ...
+        }        
+        ```
++ Crear un archivo de rutas:
+    + Crear archivo de rutas **routes\mis_rutas.php**:
+        ```php
+        <?php
+
+        use Illuminate\Support\Facades\Route;
+        // ...       
+        ```
+    + Modificar provider **app\Providers\RouteServiceProvider.php** para que **mis_rutas** se reconozca como archivo de rutas:
+        ```php
+        // ...
+        public function boot(): void
+        {
+            // ...
+            $this->routes(function () {
+                // ...
+                Route::middleware('web', 'otros_middleware')    // Por ejemplo: auth para usuarios autenticados
+                    ->prefix('mi_prefijo_en_ruta')
+                    ->group(base_path('routes/mi_ruta.php'));
+            });
+        }        
+        // ...       
+        ```
+    + mmm
+
 ## Crear una vista markdown:
 1. Instalar la dependencia:
     + $ composer require graham-campbell/markdown
@@ -1444,3 +1490,26 @@ $minuscula = strtolower('pEdRo');    // regresa: pedro
     ```
     no deben estar comentada con #.
 + Reiniciar el servidor Apache.
+
+
+## Laravek Collective
++ **Documentación**: https://laravelcollective.com/docs
++ Para instalar dependencia:
+    + $ composer require laravelcollective/html
++ Ejemplo de uso:
+    + Ejemplo 1:
+        ```php
+        {!! Form::open(['route' => 'miruta']) !!}
+            {!! Form::label('name', 'Nommbre', ['class' => 'mis-clases']) !!}   <!-- parámetros: atributo for, atributo name -->
+            {!! Form::text('name', $valor, ['class' => 'mis-clases', 'placeholder' => 'Ingrese un valor']) !!}   <!-- parámetros: atributo name, atributo value -->        
+            {!! Form::submit('Aceptar', ['class' => 'mis-clases']) !!}   <!-- parámetros: atributo name -->
+        {!! Form::close() !!}
+        ```
+    + Ejemplo 2:
+        ```php
+        {!! Form::model($modelo, ['route' => ['miruta', $paremetro], 'method' => 'put']) !!}
+            {!! Form::label('name', 'Nommbre', ['class' => 'mis-clases']) !!}   <!-- parámetros: atributo for, atributo name -->
+            {!! Form::text('name', $valor, ['class' => 'mis-clases', 'placeholder' => 'Ingrese un valor']) !!}   <!-- parámetros: atributo name, atributo value -->        
+            {!! Form::submit('Aceptar', ['class' => 'mis-clases']) !!}   <!-- parámetros: atributo name -->
+        {!! Form::close() !!}
+        ```
