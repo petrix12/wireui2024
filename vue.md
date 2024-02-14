@@ -289,6 +289,48 @@
     </style>
     ```
 
+## Ciclo de vida:
++ Etapas:
+    + beforeCreate
+    + created
+    + beforeMount
+    + mounted
+    + beforeUpdate
+    + updated
+    + beforeDestroy
+    + destroyed
++ Estructura ciclo de vida Option API:
+    ```html
+    <!-- ... -->
+    <script>
+    import OtroComponente from './OtroComponente.vue'
+
+    export default defineComponent({
+        name: 'NombreComponente',
+        props: {},
+        components: {},        
+        data() {},
+
+        created() { console.log('El componente se acaba de crear'); },
+        mounted() { console.log('El componente se acaba de montar'); },
+        updated() { console.log('El componente se acaba de actualizar'); },
+        unmounted() { console.log('El componente se acaba de desmontar (antes llamdo destroyed)'); },
+
+        computed: {},
+        methods: {}
+    });
+    </script>
+    <!-- ... -->
+    ```
+
++ Estructura ciclo de vida Composition API:
+    ```html
+    <script>
+
+    </script>
+    ```
+
+
 ## Directivas:
 + Selectivo **v-if**:
     ```html
