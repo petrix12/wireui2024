@@ -115,7 +115,7 @@
 
 ## Controladores
 + Crear controlador:
-    + $ php artisan make:controller NombreController
+    + $ php artisan make:controller Carpeta/NombreController
 + Ejemplo de un controlador para un CRUD
     + app\Http\Controllers\ModeloController.php
         ```php
@@ -766,7 +766,17 @@
                     'campo2' => 'Valor campo 2'
                 ]);
                 ```
-
++ Para crear url amigables:
+    ```php
+    // ...
+    class Modelo extends Model {
+        // ...
+        public function getRouteKeyName() {
+            return "campo_slug";
+        }
+    }
+    ```
++ 
 
 
 ## Tinker
@@ -1070,7 +1080,9 @@
             public function rules(): array
             {
                 return [
-                    'propiedad1' => 'required|min:12'
+                    'propiedad1' => 'required|min:12',
+                    'propiedad2' => 'required|unique:nombre_tabla',
+                    'propiedad3' => "required|unique:nombre_tabla,propiedad3,$modelo->id"
                 ];
             }
 
@@ -1417,7 +1429,39 @@
         ```php
         @livewire('componente-livewire')
         ```
-+ mm
++ Para indicar a un controlador de livewire que:
+    + Use la paginación de Tailwind:
+        ```php
+        // ...
+        use Livewire\WithPagination;
+
+        class MiComponenteLiveWire extends Component {
+            use WithPagination;
+            // ...
+        }
+        ```
+    + Use el tema de paginación de Bootstrap:
+        ```php
+        // ...
+        class MiComponenteLiveWire extends Component {
+            // ...
+            protected $paginationTheme = "bootstrap";
+            // ...
+        }
+        ```
+    + Resetee la paginación cuando se modifique la variable de búsqueda ($search):
+        ```php
+        // ...
+        class MiComponenteLiveWire extends Component {
+            // ...
+            public $search; // Variable de búsqueda
+
+            public updatingSerach() {
+                $this->resetPage();
+            }
+            // ...
+        }
+        ```
 
 ## Publicar recursos de Laravel:
 + Publicar idiomas:
@@ -1492,7 +1536,7 @@ $minuscula = strtolower('pEdRo');    // regresa: pedro
 + Reiniciar el servidor Apache.
 
 
-## Laravek Collective
+## Laravel Collective
 + **Documentación**: https://laravelcollective.com/docs
 + Para instalar dependencia:
     + $ composer require laravelcollective/html
@@ -1508,8 +1552,9 @@ $minuscula = strtolower('pEdRo');    // regresa: pedro
     + Ejemplo 2:
         ```php
         {!! Form::model($modelo, ['route' => ['miruta', $paremetro], 'method' => 'put']) !!}
-            {!! Form::label('name', 'Nommbre', ['class' => 'mis-clases']) !!}   <!-- parámetros: atributo for, atributo name -->
-            {!! Form::text('name', $valor, ['class' => 'mis-clases', 'placeholder' => 'Ingrese un valor']) !!}   <!-- parámetros: atributo name, atributo value -->        
+            {!! Form::label('name_text', 'Nommbre', ['class' => 'mis-clases']) !!}   <!-- parámetros: atributo for, atributo name -->
+            {!! Form::text('name_text', $valor, ['class' => 'mis-clases', 'placeholder' => 'Ingrese un valor']) !!}   <!-- parámetros: atributo name, atributo value -->
+            {!! Form::select('name_select', $opciones, null, ['class' => 'mis-clases']) !!}   <!-- parámetros: atributo name, array de opciones con la estructura atributo - valor, el terver parámetro corresponde al option por defecto, y por último, un array con los atributos adicionales -->
             {!! Form::submit('Aceptar', ['class' => 'mis-clases']) !!}   <!-- parámetros: atributo name -->
         {!! Form::close() !!}
         ```
