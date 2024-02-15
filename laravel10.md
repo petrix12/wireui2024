@@ -1552,9 +1552,96 @@ $minuscula = strtolower('pEdRo');    // regresa: pedro
     + Ejemplo 2:
         ```php
         {!! Form::model($modelo, ['route' => ['miruta', $paremetro], 'method' => 'put']) !!}
-            {!! Form::label('name_text', 'Nommbre', ['class' => 'mis-clases']) !!}   <!-- parámetros: atributo for, atributo name -->
-            {!! Form::text('name_text', $valor, ['class' => 'mis-clases', 'placeholder' => 'Ingrese un valor']) !!}   <!-- parámetros: atributo name, atributo value -->
-            {!! Form::select('name_select', $opciones, null, ['class' => 'mis-clases']) !!}   <!-- parámetros: atributo name, array de opciones con la estructura atributo - valor, el terver parámetro corresponde al option por defecto, y por último, un array con los atributos adicionales -->
-            {!! Form::submit('Aceptar', ['class' => 'mis-clases']) !!}   <!-- parámetros: atributo name -->
+            <!-- 
+                parámetro 1: atributo for
+                parámetro 2: atributo name 
+                parámetro 3: atributos adicionales
+            -->
+            {!! Form::label('name_text', 'Nommbre', ['class' => 'mis-clases']) !!}
+
+            <!-- 
+                parámetro 1: atributo name
+                parámetro 2: atributo value 
+                parámetro 3: atributos adicionales
+            -->
+            {!! Form::text('name_text', $valor, ['class' => 'mis-clases', 'placeholder' => 'Ingrese un valor']) !!}
+
+            <!-- 
+                parámetro 1: atributo name
+                parámetro 2: array de opciones con la estructura atributo - valor 
+                parámetro 3: opción por defecto
+                parámetro 4: atributos adicionales 
+            -->
+            {!! Form::select('name_select', $opciones, null, ['class' => 'mis-clases']) !!}
+
+            <!-- 
+                parámetro 1: atributo name, si queremos varios check enviar el name con corchetes []
+                parámetro 2: valor del o de los checkbox, si es uno, solamente un id, si son varios entonces un array
+                parámetro 3: valor del o de los checkbox por defecto
+                parámetro 4: atributos adicionales 
+            -->
+            {!! Form::checkbox('name_check', $valor_id, null, ['class' => 'mis-clases']) !!}
+            {{ $valor->name }}
+            <!-- cuando son varios checbox se debe de usar la directiva blade @foreach -->
+            @foreach($valores as $valor)
+                {!! Form::checkbox('name_check[]', $valor->id, null, ['class' => 'mis-clases']) !!}
+                {{ $valor->name }}
+            @endforeach
+
+            <!-- 
+                parámetro 1: atributo name
+                parámetro 2: valor del o de los radios, si es uno, solamente un id, si son varios entonces un array
+                parámetro 3: true o false, para activarlos
+                parámetro 4: atributos adicionales 
+            -->
+            {!! Form::radio('name_radio', $valor_id, null, ['class' => 'mis-clases']) !!}
+            {{ $valor->name }}
+            <!-- cuando son varios checbox se debe de usar la directiva blade @foreach -->
+            @foreach($valores as $valor)
+                {!! Form::radio('name_radio', $valor->id, null, ['class' => 'mis-clases']) !!}
+                {{ $valor->name }}
+            @endforeach
+
+            <!-- 
+                parámetro 1: atributo name
+                parámetro 2: atributo value 
+                parámetro 3: atributos adicionales
+            -->
+            {{!! Form::textarea('name_textarea', $valor, ['class' => 'mis-clases']) !!}}
+
+            <!-- 
+                parámetro 1: atributo name
+                parámetro 2: atributos adicionales 
+            -->
+            {!! Form::submit('Aceptar', ['class' => 'mis-clases']) !!} 
         {!! Form::close() !!}
+        ```
+
+## Tips generales:
++ Crear un arreglo a partir de un campo de una colección:
+    ```php
+    $coleccion = Modelo::pluck('campo1');
+    ```
+    + Esto regresa un objeto con una estructura similar a esta:
+        ```json
+        [
+            "valor 1",
+            "valor 2",
+            "valor 3",
+            // ...
+        ]
+        ```
++ Crear un objeto llave valor a partir de una colección:
+    ```php
+    $coleccion = Modelo::pluck('valor', 'llave');   
+    // Ejemplo: valor puede ser nombre y llave puede ser el id de la colección
+    ```
+    + Esto regresa un objeto con una estructura similar a esta:
+        ```json
+        {
+            "1": "valor 1",
+            "2": "valor 2",
+            "3": "valor 3",
+            // ...
+        }
         ```
