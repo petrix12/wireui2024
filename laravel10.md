@@ -1462,6 +1462,71 @@
             // ...
         }
         ```
++ Integrar **select2** en livewire:
+    + **Página de SELECT2**: https://select2.org
+    + **Página de jQuery**: https://releases.jquery.com 
+    1. Copiar los CDN de select2 y jQuery en la plantilla principal **resources\views\layouts\app.blade.php**:
+        ```html
+        <!-- ... -->
+        <head>
+            <!-- ... -->
+            <!-- Styles -->
+            <!-- ... -->
+            <!-- Colocar en la parte de los css -->
+            <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+            <!-- Scripts -->
+            <!-- ... -->
+            <!-- Colocar en la parte de los scripts -->
+            <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+            <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>        
+        </head>
+        ```
+    3. Ejemplo de uso:
+        1. Crear un compoente livewire: 
+            + $ php artisan make:livewire select2
+        2. Incluir el nuevo compoenente en la vista **resources\views\dashboard.blade.php**:
+            ```php
+            <!-- ... -->
+            @livewire('select2')
+            <!-- ... -->
+            ```
+        4. Programar el controlador livewire **app\Livewire\Select2.php**:
+            ```php
+            // ...
+            class Select2 extends Component
+            {
+                public $opcion = 3;
+                // ...
+            }            
+            ```
+        5. Diseñar la vista livewire **resources\views\livewire\select2.blade.php**:
+            ```html
+            <div class="m-5">
+                <p>{{ $opcion }}</p>
+                <div wire:ignore>
+                    <select class="select2" wire:model="opcion">
+                        <option value="1">Laravel</option>
+                        <option value="2">Vue.js</option>
+                        <option value="3">PHP</option>
+                        <option value="4">Javascript</option>
+                        <option value="5">MySQL</option>
+                        <option value="6">Node.js</option>
+                        <option value="7">React.js</option>
+                    </select>
+                </div>
+
+                <script>
+                    $(document).ready(function() {
+                        $('.select2').select2();
+                        $('.select2').on('change', function() {
+                            @this.set('opcion', this.value);
+                        });
+                    });
+                </script>
+            </div>
+            ```
+            
 
 ## Publicar recursos de Laravel:
 + Publicar idiomas:
