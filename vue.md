@@ -303,33 +303,29 @@
     ```html
     <!-- ... -->
     <script>
-    import OtroComponente from './OtroComponente.vue'
+    import { defineComponent } from 'vue'
 
     export default defineComponent({
-        name: 'NombreComponente',
-        props: {},
-        components: {},        
-        data() {},
-
         created() { console.log('El componente se acaba de crear'); },
         mounted() { console.log('El componente se acaba de montar'); },
         updated() { console.log('El componente se acaba de actualizar'); },
         unmounted() { console.log('El componente se acaba de desmontar (antes llamdo destroyed)'); },
-
-        computed: {},
-        methods: {}
-    });
+    })
     </script>
     <!-- ... -->
     ```
 
 + Estructura ciclo de vida Composition API:
     ```html
-    <script>
+    <script setup>
+    import { onCreated, onMounted, onUpdated, onUnmounted } from 'vue'
 
+    onCreated(() => { console.log('El componente se acaba de crear') })
+    onMounted(() => { console.log('El componente se acaba de montar') })
+    onUpdated(() => { console.log('El componente se acaba de actualizar') })
+    onUnmounted(() => { console.log('El componente se acaba de desmontar') })
     </script>
     ```
-
 
 ## Directivas:
 + Selectivo **v-if**:
@@ -418,5 +414,52 @@
     <!-- ... -->
     ```
 
+## Comunicación entre componentes:
++ Comunicación vertical descendente:
+    + Componente padre:
+        ```html
+        <template>
+            <h2>Componente padre</h2>
+            <ComponenteHijo 
+                informacion="Información a pasar al componente hijo"
+            />
+        </template>
+
+        <script setup>
+        import ComponenteHijo from './ComponenteHijo.vue'
+        </script>
+        ```
+    + Componente hijo con Option API:
+        ```html
+        <template>
+            <div>
+                <h2>Componente hijo</h2>
+                <p>Información del componente padre: {{ props.informacion }}</p>
+            </div>
+        </template>
+
+        <script setup>
+        import { defineComponent } from 'vue'
+
+        export default defineComponent({
+            props: {
+                informacion: {
+                    type: String,
+                    required: false,
+                    defalut: 'Sin información'
+                }
+            },
+            setup(props) {
+                return {
+                    props
+                }
+            }
+        })
+        </script>
+        ```
+    + Componente hijo con Composition API:
+        ```html
+        ```
++ Comunicación vertical ascendente:
 
 
