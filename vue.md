@@ -415,8 +415,8 @@
     ```
 
 ## Comunicación entre componentes:
-+ Comunicación vertical descendente:
-    + Componente padre:
++ Comunicación vertical descendente (**props**):
+    + Componente padre con Composition API:
         ```html
         <template>
             <h2>Componente padre</h2>
@@ -457,9 +457,62 @@
         })
         </script>
         ```
-    + Componente hijo con Composition API:
++ Comunicación vertical ascendente (**emits**):
+    + Componente padre con Option API:
         ```html
+        <template>
+            <h2>Componente padre</h2>
+            <ComponenteHijo 
+                @comunicarAlComponentePadre="comunicacionDelComponenteHijo"
+            />
+        </template>
+
+        <script setup>        
+        import { defineComponent } from 'vue'
+
+        export default defineComponent({
+            data() {
+                return {
+                    variable
+                }
+            }
+
+            methods: {
+                comunicacionDelComponenteHijo(variable) {
+                    this.variable = variable
+                }
+            }
+        })
+        </script>
         ```
-+ Comunicación vertical ascendente:
+    + Componente hijo con Option API:
+        ```html
+        <template>
+            <div>
+                <h2>Componente hijo</h2>
+                <button @click="enviarComunicacionAlComponentePadre">Enviar información al componente Padre</button>
+            </div>
+        </template>
+
+        <script setup>
+        import { defineComponent } from 'vue'
+
+        export default defineComponent({
+            emits: ["comunicarAlComponentePadre"],
+            setup(props, { emit }) {
+                const enviarComunicacionAlComponentePadre = () {
+                    emit("comunicarAlComponentePadre", "valor entregado desde el compoenente hijo")
+                }
+                return {
+                    props,
+                    enviarComunicacionAlComponentePadre
+                }
+            },
+            methods: {
+                
+            }
+        })
+        </script>
+        ```
 
 
