@@ -409,6 +409,12 @@
         + **Nota:** al usar un foreach se crean algunas variables de interes:
             + $loop->first (Primero elemento)
             + $loop->index (Elemento actual, el primero tendrá el valor de cero)
+    + error:
+        ```php
+        @error('variable')
+            {{ $message }}
+        @enderror
+        ```
 
 ## Migraciones
 + Documentación: https://laravel.com/docs/10.x/migrations
@@ -1070,20 +1076,50 @@
         // ...
         class StoreModelo extends FormRequest
         {
-            // ...
+            // Reglas de autorización (normalmente se deja así)
             public function authorize(): bool
             {
                 return true;
+            } else {
+                return false;
             }
 
-            // ...
+            // Reglas de autorización (verificando usuario autenticado)
+            public function authorize(): bool
+            {
+                if($this->usuer_id == auth()->user()->id){
+                    return true;
+                }
+            }
+
+            // Reglas de validación
             public function rules(): array
             {
                 return [
                     'propiedad1' => 'required|min:12',
                     'propiedad2' => 'required|unique:nombre_tabla',
-                    'propiedad3' => "required|unique:nombre_tabla,propiedad3,$modelo->id"
+                    'propiedad3' => "required|unique:nombre_tabla,propiedad3,$modelo->id",
+                    'propiedad4' => 'in:1,2'
                 ];
+            }
+
+            // Reglas de validación condicionales
+            public function rules(): array
+            {
+                $rules = [
+                    'propiedad1' => 'required|min:12',
+                    'propiedad2' => 'required|unique:nombre_tabla',
+                    'propiedad3' => "required|unique:nombre_tabla,propiedad3,$modelo->id",
+                    'propiedad4' => 'in:1,2'
+                ];
+
+                if($this->propiedad4 == 2) {
+                    $rules = array_merge($rules, [
+                        'propiedad5' = 'required'
+                    ]);
+                }
+
+                return $rules;
             }
 
             // Método para personalizar los mensaje de error
@@ -1105,6 +1141,8 @@
         ```
     + Ejemplo de uso en el controlador que lo invoca **app\Http\Controllers\ModeloController.php**:
         ```php
+        // ...
+        use App\Http\Requests\StoreModelo;
         // ...
         public function store(StoreModelo $request) {
 
@@ -1383,7 +1421,6 @@
         }        
         // ...       
         ```
-    + mmm
 
 ## Crear una vista markdown:
 1. Instalar la dependencia:
@@ -1617,6 +1654,13 @@ $minuscula = strtolower('pEdRo');    // regresa: pedro
     + Ejemplo 2:
         ```php
         {!! Form::model($modelo, ['route' => ['miruta', $paremetro], 'method' => 'put']) !!}
+            <!-- 
+                parámetro 1: atributo name
+                parámetro 2: atributo value 
+                parámetro 3: atributos adicionales
+            -->
+            {!! Form::hidden('name_hidden', $valor) !!}
+
             <!-- 
                 parámetro 1: atributo for
                 parámetro 2: atributo name 
