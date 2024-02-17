@@ -438,7 +438,7 @@
             </div>
         </template>
 
-        <script setup>
+        <script>
         import { defineComponent } from 'vue'
 
         export default defineComponent({
@@ -457,6 +457,27 @@
         })
         </script>
         ```
+    + Componente hijo con Composition API con el setup definido en el script:
+        ```html
+        <template>
+            <div>
+                <h2>Componente hijo</h2>
+                <p>Información del componente padre: {{ props.informacion }}</p>
+            </div>
+        </template>
+
+        <script setup>
+        import { defineProps } from 'vue'
+
+        const props = defineProps({
+            informacion: {
+                type: String,
+                required: false,
+                defalut: 'Sin información'
+            }
+        })
+        </script>
+        ```
 + Comunicación vertical ascendente (**emits**):
     + Componente padre con Option API:
         ```html
@@ -467,7 +488,7 @@
             />
         </template>
 
-        <script setup>        
+        <script>        
         import { defineComponent } from 'vue'
 
         export default defineComponent({
@@ -494,7 +515,7 @@
             </div>
         </template>
 
-        <script setup>
+        <script>
         import { defineComponent } from 'vue'
 
         export default defineComponent({
@@ -508,10 +529,25 @@
                     enviarComunicacionAlComponentePadre
                 }
             },
-            methods: {
-                
-            }
         })
+        </script>
+        ```
+    + Componente hijo con Composition API con el setup definido en el script:
+        ```html
+        <template>
+            <div>
+                <h2>Componente hijo</h2>
+                <button @click="enviarComunicacionAlComponentePadre">Enviar información al componente Padre</button>
+            </div>
+        </template>
+
+        <script setup>
+        import { defineProps, defineEmits } from 'vue'
+
+        const emit = defineEmits(['comunicarAlComponentePadre'])
+        const enviarComunicacionAlComponentePadre = () {
+            emit("comunicarAlComponentePadre", "valor entregado desde el compoenente hijo")
+        }
         </script>
         ```
 

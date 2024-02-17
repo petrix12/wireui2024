@@ -1099,7 +1099,8 @@
                     'propiedad1' => 'required|min:12',
                     'propiedad2' => 'required|unique:nombre_tabla',
                     'propiedad3' => "required|unique:nombre_tabla,propiedad3,$modelo->id",
-                    'propiedad4' => 'in:1,2'
+                    'propiedad4' => 'in:1,2',
+                    'propiedad5_file' => 'image'
                 ];
             }
 
@@ -1723,6 +1724,13 @@ $minuscula = strtolower('pEdRo');    // regresa: pedro
                 parámetro 2: atributos adicionales 
             -->
             {!! Form::submit('Aceptar', ['class' => 'mis-clases']) !!} 
+        {!! Form::close() !!}
+        ```
+    + Para indicar el envío de archivos dentro del formulario
+        ```php
+        {!! Form::open(['route' => 'miruta', 'files' => true]) !!}
+            {!! Form::file('file', ['class' => 'mis-clases']) !!}
+            // ...
         {!! Form::close() !!}
         ```
 
