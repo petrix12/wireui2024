@@ -47,10 +47,12 @@ class ModeloController extends Controller
     }
 
     public function edit(Modelo $modelo) {
+        $this->authorize('regla_autorizacion', $modelo);
         return view('crud.modelos.edit', compact('modelo'));
     }
 
     public function update(Request $request, Modelo $modelo) {
+        $this->authorize('regla_autorizacion', $modelo);
         $request->validate([
             // Reglas de validación
             'propiedad1' => 'required|min:12'
@@ -78,6 +80,7 @@ class ModeloController extends Controller
     }
 
     public function destroy(Modelo $modelo) {
+        $this->authorize('regla_autorizacion', $modelo);
         $modelo->delete();
         return redirect()->route('modelos.index');
     }

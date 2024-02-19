@@ -415,6 +415,14 @@
             {{ $message }}
         @enderror
         ```
+    + isset (si la variable esta definida):
+        ```php
+        @isset($variable)
+            <p>La variable esta definidad</p>
+        @else
+            <p>La variable no esta definidad</p>
+        @endisset
+        ```
 
 ## Migraciones
 + Documentación: https://laravel.com/docs/10.x/migrations
@@ -1107,12 +1115,19 @@
             // Reglas de validación condicionales
             public function rules(): array
             {
+                // Capturar parámetro de la ruta
+                $parametro = $this->route()->parameter('paremetro');
+                
                 $rules = [
                     'propiedad1' => 'required|min:12',
                     'propiedad2' => 'required|unique:nombre_tabla',
                     'propiedad3' => "required|unique:nombre_tabla,propiedad3,$modelo->id",
                     'propiedad4' => 'in:1,2'
                 ];
+
+                if($parametro) {
+                    $rules['propiedad2'] = "required|unique:nombre_tabla,propiedad3,$parametro"
+                }
 
                 if($this->propiedad4 == 2) {
                     $rules = array_merge($rules, [
@@ -1154,6 +1169,50 @@
         }
         // ...   
         ```
+
+## Policy:
++ Crear una policy:
+    + $ php artisan make:policy ModeloPolicy
++ Implementar una regla de autorización en **app\Policies\ModeloPolicy.php**:
+    ```php
+    // ...
+    use App\Models\Modelo;
+    use App\Models\User;
+
+    class ModeloPolicy
+    {
+        // ...
+        // Crear regla de autorización
+        public function regla_autorizacion(User $user, Modelo $modelo) {
+            $condicion_de_autorizacion = true;  // Ejemplo: $user->id == $modelo->user_id
+            if($condicion_de_autorizacion) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }    
+    ```
++ Hacer referencia a la policy en el modelo **app\Http\Controllers\ModeloController.php**:
+    ```php
+    // ...
+    public function edit(Modelo $modelo) {
+        $this->authorize('regla_autorizacion', $modelo);
+        // ...
+    }
+
+    public function update(Request $request, Modelo $modelo) {
+        $this->authorize('regla_autorizacion', $modelo);
+        // ...
+    }
+
+    public function destroy(Modelo $modelo) {
+        $this->authorize('regla_autorizacion', $modelo);
+        // ...
+    }    
+    // ...
+    ```
+
 
 ## Configuración
 + Configurar proyecto al español:
@@ -1422,6 +1481,64 @@
         }        
         // ...       
         ```
+
+## Observer:
++ Crear un observer:
+    + $ php artisan make:observer ModeloObserver --model=Modelo
+    + **Nota**: me crea un observer en **app\Observers\ModeloObserver.php**.
++ Programar un observer (modificar el observer **app\Observers\ModeloObserver.php**):
+    ```php
+    // ...
+    public function created(Modelo $modelo): void
+    {
+        // Se activa al crear un registro
+    }
+    // ...
+    public function creating(Modelo $modelo): void
+    {
+        // Se activa justo antes de crear un registro
+    }
+    // ...
+    public function updated(Modelo $modelo): void
+    {
+        // Se activa al actualizar un registro
+    }
+    // ...
+    public function deleted(Modelo $modelo): void
+    {
+        // Se activa al aleminar un registro
+    }
+    // ...
+    public function deleting(Modelo $modelo): void {
+        // Se activa justo antes de aliminar un registro
+    }
+    // ...
+    public function restored(Modelo $modelo): void
+    {
+        //
+    }
+    // ...
+    public function forceDeleted(Modelo $modelo): void
+    {
+        //
+    }
+    ```
++ Registrar un observer (modificar el provider **app\Providers\EventServiceProvider.php**):
+    ```php
+    // ...
+    use App\Models\Modelo;
+    use App\Observers\ModeloObserver;
+
+    class EventServiceProvider extends ServiceProvider
+    {
+        // ...
+        public function boot(): void
+        {
+            Modelo::observe(ModeloObserver::class);
+        }
+        // ...
+    }
+    ```
 
 ## Crear una vista markdown:
 1. Instalar la dependencia:
@@ -1732,6 +1849,25 @@ $minuscula = strtolower('pEdRo');    // regresa: pedro
             {!! Form::file('file', ['class' => 'mis-clases']) !!}
             // ...
         {!! Form::close() !!}
+        ```
+
+## Laravel-permission:
++ Documentación: https://spatie.be/index.php/docs/laravel-permission/v6/introduction
++ Instalación:
+    + $ composer require spatie/laravel-permission
++ Publicar las migraciones:
+    + $ php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"
++ Indicar los modelos que harán uso de Laravel permission:
+    + Ejemplo: modificar el modelo User **app\Models\User.php**:
+        ```php
+        // ...
+        use Spatie\Permission\Traits\HasRoles;
+        // ...
+        class User extends Authenticatable
+        {
+            use HasRoles;   // Establece las relaciones entre el modelo User y los modelos de Laravel Permission
+            // ...
+        }
         ```
 
 ## Tips generales:

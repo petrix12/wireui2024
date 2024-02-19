@@ -551,4 +551,78 @@
         </script>
         ```
 
+## Propiedades computadas:
++ Option API:
+    ```html
+    <template>
+        <div>
+            <p>{{ valorData }}</p>
+            <p>{{ valorComputado }}</p>
+        </div>
+    </template>
+
+    <script>
+    import { defineComponent } from 'vue'
+
+    export default defineComponent({
+        data() {
+            return {
+                valorData: 1
+            }
+        },
+        computed: {
+            valorComputado() {
+                return this.valorData * 2;
+            }
+            // Con Typescript se debe añadir el tipado de datos al valor computado:
+            /*
+            valorComputado():integer {
+                return this.valorData * 2;
+            }
+            */
+        }
+    })
+    </script>
+    ```
++ Composition API:
+    ```html
+    <template>
+        <div>
+            <p>{{ valorData }}</p>
+            <p>{{ valorComputado }}</p>
+        </div>
+    </template>
+
+    <script>
+    import { defineComponent, ref, computed } from 'vue'
+
+    export default defineComponent({
+        setup() {
+            let valorData = ref(1)
+            const valorComputado = computed(() => valorData.value * 2)
+
+            return {
+                valorData,
+                valorComputado
+            }
+        }
+    })
+    </script>
+    ```
++ Composition API con setup en el script:
+    ```html
+    <template>
+        <div>
+            <p>{{ valorData }}</p>
+            <p>{{ valorComputado }}</p>
+        </div>
+    </template>
+
+    <script setup>
+    import { ref, computed } from 'vue'
+    
+    let valorData = ref(1)
+    const valorComputado = computed(() => valorData.value * 2)
+    </script>
+    ```
 
