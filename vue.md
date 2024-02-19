@@ -626,3 +626,77 @@
     </script>
     ```
 
+## Directivas personalizadas:
++ Directiva personalizada simple:
+    + Modificar el archivo principal **mi_proyecto\src\main.js** para estructurar la directiva personalizada:
+        ```js
+        // ...
+        const app = createApp(App)
+        
+        /* 
+            1er parámetro: nombre de la directiva (dentro de vue la usaremos como v-mi-directiva)
+            2do parámetro: objeto con las acciones a realizar
+        */
+        app.directive('mi-directiva', {
+            /* 
+                Clave: momento del ciclo de vida de un componente
+                Valor: acción a realizar
+            */
+            beforeMount: (el) => {
+                /*
+                    el: etiqueta html en donde va a actuar la directiva
+
+                */
+               el.style.fontSize = "70px"
+            },
+            updated: () => {
+                // Otras acciones a tomar
+            }
+        })
+        
+        app.mount('#app')
+        // ...
+        ```
+    + Ejemplo de uso en un componente:
+        ```html
+        <p v-mi-directiva>Texto con la directiva personalizada aplicada</p>
+        ```
++ Directiva personalizada con value:
+    + Modificar el archivo principal **mi_proyecto\src\main.js** para estructurar la directiva personalizada:
+        ```js
+        // ...
+        const app = createApp(App)
+        
+        /* 
+            1er parámetro: nombre de la directiva (dentro de vue la usaremos como v-mi-directiva)
+            2do parámetro: objeto con las acciones a realizar
+        */
+        app.directive('mi-directiva', {
+            /* 
+                Clave: momento del ciclo de vida de un componente
+                Valor: acción a realizar
+            */
+            beforeMount: (el, binding) => {
+                /*
+                    el: etiqueta html en donde va a actuar la directiva
+                    binding: datos a recibir por la directiva
+
+                */
+               el.style.fontSize = "70px"
+            },
+            updated: () => {
+                // Otras acciones a tomar
+            }
+        })
+        
+        app.mount('#app')
+        // ...
+        ```
+    + Ejemplo de uso en un componente:
+        ```html
+        <p v-mi-directiva>Texto con la directiva personalizada aplicada</p>
+        ```
+
+
+
+
