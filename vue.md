@@ -647,7 +647,7 @@
                     el: etiqueta html en donde va a actuar la directiva
 
                 */
-               el.style.fontSize = "70px"
+                el.style.fontSize = "70px"
             },
             updated: () => {
                 // Otras acciones a tomar
@@ -682,10 +682,7 @@
                     binding: datos a recibir por la directiva
 
                 */
-               el.style.fontSize = "70px"
-            },
-            updated: () => {
-                // Otras acciones a tomar
+                el.style.fontSize = binding.value + "px"
             }
         })
         
@@ -694,9 +691,100 @@
         ```
     + Ejemplo de uso en un componente:
         ```html
-        <p v-mi-directiva>Texto con la directiva personalizada aplicada</p>
+        <p v-mi-directiva="45">Texto con la directiva personalizada aplicada</p>
         ```
++ Directiva personalizada con argumentos:
+    + Modificar el archivo principal **mi_proyecto\src\main.js** para estructurar la directiva personalizada:
+        ```js
+        // ...
+        const app = createApp(App)
+        
+        /* 
+            1er parámetro: nombre de la directiva (dentro de vue la usaremos como v-mi-directiva)
+            2do parámetro: objeto con las acciones a realizar
+        */
+        app.directive('mi-directiva', {
+            /* 
+                Clave: momento del ciclo de vida de un componente
+                Valor: acción a realizar
+            */
+            beforeMount: (el, binding) => {
+                /*
+                    el: etiqueta html en donde va a actuar la directiva
+                    binding: datos a recibir por la directiva
 
+                */
+                let size = 18
+                switch(binding.arg) {
+                    case 'sm':
+                        size = 10
+                        break
+                    case 'md':
+                        size = 18
+                        break
+                    case 'lg':
+                        size = 25
+                        break
+                    case 'xl':
+                        size = 40
+                        break
+                }
+                el.style.fontSize = size + "px"
+            }
+        })
+        
+        app.mount('#app')
+        // ...
+        ```
+    + Ejemplo de uso en un componente:
+        ```html
+        <p v-mi-directiva:xl>Texto con la directiva personalizada aplicada</p>
+        ```
++ Directiva personalizada con modificadores:
+    + Modificar el archivo principal **mi_proyecto\src\main.js** para estructurar la directiva personalizada:
+        ```js
+        // ...
+        const app = createApp(App)
+        
+        /* 
+            1er parámetro: nombre de la directiva (dentro de vue la usaremos como v-mi-directiva)
+            2do parámetro: objeto con las acciones a realizar
+        */
+        app.directive('mi-directiva', {
+            /* 
+                Clave: momento del ciclo de vida de un componente
+                Valor: acción a realizar
+            */
+            beforeMount: (el, binding) => {
+                /*
+                    el: etiqueta html en donde va a actuar la directiva
+                    binding: datos a recibir por la directiva
 
+                */                
+                if(binding.modifiers.sm) {
+                    el.style.fontSize = "10px"
+                } else if(binding.modifiers.md) {
+                    el.style.fontSize = "18px"
+                } else if(binding.modifiers.lg) {
+                    el.style.fontSize = "25px"
+                }
+
+                if(binding.modifiers.red) {
+                    el.style.color = '#FF0000'
+                } else if(binding.modifiers.green) {
+                    el.style.color = '#00FF00'
+                } else if(binding.modifiers.blue) {
+                    el.style.color = '#0000FF'
+                }
+            }
+        })
+        
+        app.mount('#app')
+        // ...
+        ```
+    + Ejemplo de uso en un componente:
+        ```html
+        <p v-mi-directiva.blue.sm>Texto con la directiva personalizada aplicada</p>
+        ```
 
 
