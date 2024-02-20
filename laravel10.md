@@ -67,6 +67,10 @@
 
         // Ruta tipo resource
         Route::resource('ruta', NombreController::class)->names('rutas');
+
+        // Ruta tipo resource indicando los métodos del controlador a usar
+        // Luego en el controlador NombreController se pueden eliminar todos los métodos que no se esten usando
+        Route::resource('ruta', NombreController::class)->only(['index', 'edit', 'update'])->names('rutas');
         ```
 + Asignar nombre identificativo a una ruta:
     ```php
@@ -1604,7 +1608,7 @@
             // ...
         }
         ```
-    + Resetee la paginación cuando se modifique la variable de búsqueda ($search):
+    + Resetear la paginación cuando se modifique la variable de búsqueda ($search):
         ```php
         // ...
         class MiComponenteLiveWire extends Component {
@@ -1869,6 +1873,32 @@ $minuscula = strtolower('pEdRo');    // regresa: pedro
             // ...
         }
         ```
++ Crar roles y permisos:
+    ```php
+    // ...
+    use Spatie\Permission\Models\Role;
+    use Spatie\Permission\Models\Permission;
+    // ...
+    $rol1 = Role::create(['name' => 'rol1']);
+    // ...
+    $permiso1 = Permission::create(['name' => 'permiso1']);
+    // ...
+    ```
+    + **Nota**: un buen lugar para crearlos es en un Seeder.
++ Asignar un rol con un permiso:
+    ```php
+    // ...
+    $permiso1 = Permission::create(['name' => 'permiso1'])->assignRole($rol1);
+    $permiso2 = Permission::create(['name' => 'permiso2'])->assignRole([$rol1, $rol2]);
+    // ...
+    ```
++ Asignar varios roles con un permiso:
+    ```php
+    // ...
+    $permiso1 = Permission::create(['name' => 'permiso1'])->syncRole([$rol1, $rol2]);
+    // ...
+    ```
+
 
 ## Tips generales:
 + Crear un arreglo a partir de un campo de una colección:
