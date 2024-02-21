@@ -787,4 +787,39 @@
         <p v-mi-directiva.blue.sm>Texto con la directiva personalizada aplicada</p>
         ```
 
+## Servicios:
++ **Nota**: una buena práctica de programación es crear los servicios en una ruta específica para este fin, como puede ser **mi_proyecto\src\services**.
++ Ejemplo de una clase de servicio:
+    + Creación del servicio (crear **vue2024\mi_proyecto\src\services\ModeloService.js**):
+        ```js
+        import { ref } from 'vue'
+
+        class ModeloService {
+            private modelos
+
+            constructor() {
+                this.modelos = ref([])
+            }
+
+            getModelos() {
+                return this.modelos
+            }
+
+            async fetchAll() {
+                try {
+                    const url = 'https:://mi_servicio/modelos'
+                    const response = await fetch(url)
+                    const json = await response.json()
+                    this.modelos.value = await json
+                } catch(error) {
+                    console.log(error)
+                }
+            }
+        }
+
+        export default ModeloService        
+        ```
+    + Consumo del servicio
+
+
 
