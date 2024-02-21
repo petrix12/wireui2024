@@ -69,8 +69,12 @@
         Route::resource('ruta', NombreController::class)->names('rutas');
 
         // Ruta tipo resource indicando los métodos del controlador a usar
-        // Luego en el controlador NombreController se pueden eliminar todos los métodos que no se esten usando
+        // Luego en el controlador NombreController se pueden incluir sololos métodos que se esten usando
         Route::resource('ruta', NombreController::class)->only(['index', 'edit', 'update'])->names('rutas');
+
+        // Ruta tipo resource indicando los métodos del controlador a exceptuar
+        // Luego en el controlador NombreController se pueden eliminar todos los métodos que no se esten usando
+        Route::resource('ruta', NombreController::class)->except(['show', 'destroy'])->names('rutas');
         ```
 + Asignar nombre identificativo a una ruta:
     ```php
@@ -1897,6 +1901,29 @@ $minuscula = strtolower('pEdRo');    // regresa: pedro
     // ...
     $permiso1 = Permission::create(['name' => 'permiso1'])->syncRole([$rol1, $rol2]);
     // ...
+    ```
++ Proteger vista blade:
+    ```html
+    @can('permiso1')
+        <!-- ... -->
+    @endcan
+    ```
++ Proteger rutas desde un archivo de rutas (proteger ruta):
+    ```php
+    Route::get('prueba', function() {
+        return "Tienes permiso para ingresar a esta ruta";
+    })->middleware('can:premiso1');
+    ```
++ Proteger rutas desde un controlador (proteger método):
+    ```php
+    // ...
+    class ModeloController extends Controller {
+        public function __construct() {
+            $this->middleware('can:permiso1')->only('metodo1', 'metodo2');
+        }
+        // ...
+    }
+    
     ```
 
 

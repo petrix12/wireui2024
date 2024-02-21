@@ -1,7 +1,7 @@
 # Visual Studio Code
 
 ## Construcción de un snippet
-1. Página para generar snippet:; https://snippet-generator.app/?description=&tabtrigger=&snippet=&mode=vscode
+1. Página para generar snippet: https://snippet-generator.app
 2. Estructura:
 ```html
 <template>
