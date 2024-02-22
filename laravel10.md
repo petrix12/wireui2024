@@ -1902,6 +1902,12 @@ $minuscula = strtolower('pEdRo');    // regresa: pedro
     $permiso1 = Permission::create(['name' => 'permiso1'])->syncRole([$rol1, $rol2]);
     // ...
     ```
++ Asignar a un ros varios permisos:
+    ```php
+    // ...
+    $rol1->permissions()->sync($listaDePermisos);
+    // ...
+    ```
 + Proteger vista blade:
     ```html
     @can('permiso1')
