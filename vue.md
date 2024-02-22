@@ -819,7 +819,64 @@
 
         export default ModeloService        
         ```
-    + Consumo del servicio
+    + Consumo del servicio (**vue2024\mi_proyecto\src\components\MoldeloList.vue**):
+        + Forma 1: Composition API
+            ```html
+            <template>
+                <h2>Lista de modelos</h2>
+                <ul>
+                    <li v-if="modelo in modelos" :key="modelo.id">{{ modelo.name }}</li>
+                </ul>
+            </template>
 
+            <script>
+            import { defineComponent, onMounted } from 'vue'
+            import ModeloService from '@/services/ModeloService'
 
+            export default defineComponent({
+                name: 'ModeloList',
+                setup() {
+                    const service = new ModeloService()
+                    const modelos = service.getModelos()
+                    onMounted(async () => {
+                        await service.fetchAll()
+                    })
+                    return {
+                        modelos
+                    }
+                },
+            })
+            </script>            
+            ```
+
+## Tips de interes:
+### Importar estilos y scripts a un componente vue:
+    ```html
+    <!-- ... -->
+    <script>
+    export default {
+        // ...
+        head() {
+            return {
+                link: [
+                    {
+                        rel: 'stylesheet',
+                        href: 'https://url_estilos.css',
+                    },
+                    // ...
+                ],
+                script: [
+                    {
+                        src: 'https://url_scripts.js',
+                        type: 'text/javascript',
+                    },
+                    // ...
+                ],
+            };
+        },
+        // ...
+    };
+    </script>
+    <!-- ... -->
+    ```
 
