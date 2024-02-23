@@ -1716,6 +1716,64 @@
 + Crear un enlace simbólico o acceso directo a el storage de la aplicación:
     + $ php artisan storage:link
 
+## Caché de Laravel:
++ Archivo de configuración: config\cache.php
++ Aplicar caché a un Controlador:
+    ```php
+    // ...
+    use Illuminate\Support\Facades\Cache;
+
+    class ModeloController extends Controller
+    {
+        // ...
+        public function index() {
+            if(request()->page) {
+                $key = 'modelos' . request()->page;
+            } else {
+                $key = 'modelos';
+            }
+
+            if(Cache::has($key)) {
+                $modelos = Cache::get($key);
+            } else {
+                $modelos = Modelo::paginate();
+                // Almacenar en cache
+                // Parámetro 1: nombre de la variable
+                // Parámetro 2: valor de la variable
+                // Parámetro 3 (opcional): tiempo que la variable existirá en caché
+                Cache::put($key, $modelos);
+            }
+
+            return view('crud.modelos.index', compact('modelos'));
+        }
+        // ...
+        public function store(Request $request) {
+            // ...
+            // Eliminar una variable (key) de caché
+            // Cache::forget('key');
+            // Eliminar todas las variables de caché
+            Cache::flush();
+            return redirect()->route('modelos.show', $modelo);
+        }
+        // ...
+        public function update(Request $request, Modelo $modelo) {
+            // ...
+            // Eliminar todas las variables de caché
+            Cache::flush();
+            return redirect()->route('modelos.show', $modelo);
+        }
+        // ...
+        public function destroy(Modelo $modelo) {
+            // ...
+            // Eliminar todas las variables de caché
+            Cache::flush();
+            return redirect()->route('modelos.index');
+        }        
+        // ...        
+    }    
+    ```
++ mmm
+
 ## Algunas funciones php:
 ```php
 // Encriptar contraseña:
