@@ -306,6 +306,7 @@
     import { defineComponent } from 'vue'
 
     export default defineComponent({
+        beforeCreate() { console.log('El componente se va a crear'); },
         created() { console.log('El componente se acaba de crear'); },
         mounted() { console.log('El componente se acaba de montar'); },
         updated() { console.log('El componente se acaba de actualizar'); },
@@ -314,7 +315,6 @@
     </script>
     <!-- ... -->
     ```
-
 + Estructura ciclo de vida Composition API:
     ```html
     <script setup>
@@ -844,6 +844,56 @@
                     return {
                         modelos
                     }
+                },
+            })
+            </script>            
+            ```
+        + Forma 2: Composition API con setup en el script
+            ```html
+            <template>
+                <h2>Lista de modelos</h2>
+                <ul>
+                    <li v-if="modelo in modelos" :key="modelo.id">{{ modelo.name }}</li>
+                </ul>
+            </template>
+
+            <script setup>
+            import { onMounted } from 'vue'
+            import ModeloService from '@/services/ModeloService'
+
+            const service = new ModeloService()
+            const modelos = service.getModelos()
+            onMounted(async () => {
+                await service.fetchAll()
+            })
+            </script>            
+            ```
+        + Forma 3: Option API
+            ```html
+            <template>
+                <h2>Lista de modelos</h2>
+                <ul>
+                    <li v-if="modelo in modelos" :key="modelo.id">{{ modelo.name }}</li>
+                </ul>
+            </template>
+
+            <script>
+            import { defineComponent } from 'vue'
+            import ModeloService from '@/services/ModeloService'
+
+            export default defineComponent({
+                name: 'ModeloList',
+                data() {                        
+                    const service = new ModeloService()
+                    const modelos = service.getModelos()                    
+                    return {
+                        modelos,
+                        service
+                    }
+                },
+
+                async mounted() {
+                    await this.service.fetchAll()
                 },
             })
             </script>            
