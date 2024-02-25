@@ -38,6 +38,29 @@
 + Crear un proyecto con Jetstream desde el instalador de Laravel:
     + $ laravel new mi_proyecto_laravel --jet
 
+## Estructura de carpetas de un proyecto Laravel:
++ **app**: lógica principal de la aplicación (backend).
++ **bootstrap**: archivos que se usan para la carga del proyecto.
++ **config**: archivos de configuración del proyecto.
+    + **config\app.php**: configuración de la aplicación.
+    + **config\database.php**: configuración de la base de datos.
+    + **config\mail.php**: configuración de emails.
++ **database**: administración de la base de datos.
+    + **database\factories**: creación de datos de prueba.
+    + **database\migrations**: administración de tablas en base de datos.
+    + **database\seeders**: poblar la base de datos con datos de prueba.
++ **lang**: administración de idiomas.
++ **node_modules**: dependencias npm.
++ **public**: archivos accesibles desde la web.
+    + **public\index.php**: punto de entrada a la aplicación.
++ **resources**: vista de la aplicación (frontend)
+    + **resources\css**: estilos.
+    + **resources\js**: scripts.
+    + **resources\views**: vistas y componentes.
++ **routes**: url's o rutas de la aplicación.
++ **storage**: almacenamiento.
++ **tests**: archivos de pruebas para la aplicación.
++ **vendor**: dependencias composer.
 
 ## Rutas
 + Estructura de una ruta:
