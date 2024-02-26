@@ -140,7 +140,57 @@
         }
         /* ... */
     </style>
-    ``` 
+    ```
++ Ejemplo de un archivo de estilos sass en el proyecto:
+    + Crear archivo de estilos **cssexample\src\scss\_variables.scss**:
+        ```scss
+        $red: #FF0000;
+        $green: #00FF00;
+        $blue: #0000FF;
+        ```
+    + Incorporar archivo de estilos a la aplicación en **cssexample\vue.config.js**:
+        ```js
+        // ...
+        module.exports = defineConfig({
+        // ...
+        css: {
+            loaderOptions: {
+                sass: {
+                    additionalData: `
+                        @import "@/scss/_variables.scss";
+                    `
+                }
+            }
+        }
+        })        
+        ```
+    + **Nota 1**: luego será necesario reiniciar el servidor web.
+    + **Nota 2**: la instrucción:
+        ```scss
+        @import "@/scss/_variables.scss";
+        ```
+        Se puede usar dentro de cualquier componente vue de la aplicación, ejm:
+        ```html
+        <!-- ... -->
+        <style scoped lang="scss">
+            /* ... */
+            @import "@/scss/_variables.scss";
+            /* ... */
+        </style>            
+        ```
+
+
+## Estructura recomendada de carpetas de un proyecto Vue:
++ **node_modules**: dependencias npm.
++ **public**: archivos accesibles desde la web.
++ **src**: parte central de la aplicación.
+    + **assets**
+    + **components**
+    + **interfaces**
+    + **scss**: contenedor de archivos de pre-procesadores css.
+    + **services**
+
+
 
 ## Estructura de un compoenten Vue:
 + Estructura general Option API:
