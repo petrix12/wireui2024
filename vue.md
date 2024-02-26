@@ -101,6 +101,47 @@
             </style>            
             ```
 
+## Proyectos con pre-procesador css:
++ Crear un proyecto con pre-procesador css:
+    + Ejecutar:
+        + $ vue create cssexample
+        + Ejemplo de opciones seleccionadas para la creación de un proyecto:
+            ```
+            Vue CLI v5.0.8
+            ? Please pick a preset: Manually select features
+            ? Check the features needed for your project: (Press <space> to select, <a> to toggle all, <i> to invert selection, and <enter> to proceed)        
+            >(*) Babel
+            ( ) TypeScript
+            ? Check the features needed for your project: Babel, TS, CSS Pre-processors, Linter
+            ? Choose a version of Vue.js that you want to start the project with 3.x
+            ? Use class-style component syntax? No
+            ? Use Babel alongside TypeScript (required for modern mode, auto-detected polyfills, transpiling JSX)? Yes
+            ? Pick a CSS pre-processor (PostCSS, Autoprefixer and CSS Modules are supported by default): Sass/SCSS (with dart-sass)
+            ? Pick a linter / formatter config: Basic
+            ? Pick additional lint features: Lint on save
+            ? Where do you prefer placing config for Babel, ESLint, etc.? In dedicated config files
+            ? Save this as a preset for future projects? No         
+            ```
++ Incluir pre-procesador css en un proyecto existente:
+    + SASS:
+        + $ npm install -D sass-loader sass
+    + LESS:
+        + $ npm install -D less-loader less
+    + Stylus:
+        + $ npm install -D stylus-loader stylus
++ Para aplicar los estilos del pre-procesador css:
+    ```html
+    <!-- ... -->
+    <style scoped lang="scss">
+        /* ... */
+        $red: #FF0000;
+        h3 {
+            color: $red;
+        }
+        /* ... */
+    </style>
+    ``` 
+
 ## Estructura de un compoenten Vue:
 + Estructura general Option API:
     ```html

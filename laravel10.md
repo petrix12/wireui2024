@@ -67,6 +67,7 @@
     + Las rutas se definenen en los archivos contenidos en la carpeta **routes**.
     + Ejemplo:
         ```php
+        // Ruta con parámetros
         Route::get('ruta/{parametro_obligatorio}/{parametro_opcional?}', function($parametro_obligatorio, $parametro_opcional = null) {
             if($parametro_opcional) {
                 return "ruta con $parametro_obligatorio y $parametro_opcional";
@@ -98,6 +99,41 @@
         // Ruta tipo resource indicando los métodos del controlador a exceptuar
         // Luego en el controlador NombreController se pueden eliminar todos los métodos que no se esten usando
         Route::resource('ruta', NombreController::class)->except(['show', 'destroy'])->names('rutas');
+
+        // Definir más de un método en una ruta
+        Route::match(['get', 'post'], 'mi_ruta', function() {
+            return "Ruta mi_ruta usando el método GET o POST";
+        });
+
+        // Proteger rutas con expresiones regulares
+        // Carácteres de letras       
+        Route::get('ruta/{letras}', function() {
+            return "Ruta con parámetros con valores de letras"
+        })->where('letras', '[a-zA-Z]+');   //->whereAlpha('letras');
+        
+        // Carácteres alfanuméricos
+        Route::get('ruta/{letras}', function() {
+            return "Ruta con parámetros con valores alfanuméricos"
+        })->whereAlphaNumeric('letras');
+
+        // Carácteres numéricos, pero indicando la protección de manera global en el provider app\Providers\RouteServiceProvider.php
+        Route::get('ruta/{numero}', function() {
+            return "Ruta con parámetros con valores de números"
+        });
+        /*
+            + Modificar el provider app\Providers\RouteServiceProvider.php:
+        ```php
+        // ...
+        class RouteServiceProvider extends ServiceProvider
+        {
+            // ...
+            public function boot(): void
+            {
+                Route::pattern('numero', '[0-9]+');
+                // ...
+            }
+        }
+        */
         ```
 + Asignar nombre identificativo a una ruta:
     ```php
@@ -135,8 +171,16 @@
     ```
 + Ver todas las rutas:
     + $ php artisan r:l
+    + $ php artisan route:list
 + Ver todas las rutas con un nombre específico:
     + $ php artisan r:l --name=rutas
+    + $ php artisan r:l --path=comienza_por
++ Ver todas las rutas definidas por el programador de la aplicación:
+    + $ php artisan r:l --except-vendor
++ Ver todas las rutas definidas por laravel o paquetes de terceros:
+    + $ php artisan r:l --only-vendor
++ Ver todas las rutas con junto con el middelware que la protege:
+    + $ php artisan r:l -v
 + Llamar una ruta desde una vista:
     ```php
     <!-- -->
@@ -1511,6 +1555,20 @@
             });
         }        
         // ...       
+        ```
++ Indicar que una ruta recibirá un valor númerico:
+    + Modificar el provider **app\Providers\RouteServiceProvider.php**:
+        ```php
+        // ...
+        class RouteServiceProvider extends ServiceProvider
+        {
+            // ...
+            public function boot(): void
+            {
+                Route::pattern('id', '[0-9]+');
+                // ...
+            }
+        }
         ```
 
 ## Observer:
