@@ -102,26 +102,25 @@
             ```
 
 ## Proyectos con pre-procesador css:
-+ Crear un proyecto con pre-procesador css:
-    + Ejecutar:
-        + $ vue create cssexample
-        + Ejemplo de opciones seleccionadas para la creación de un proyecto:
-            ```
-            Vue CLI v5.0.8
-            ? Please pick a preset: Manually select features
-            ? Check the features needed for your project: (Press <space> to select, <a> to toggle all, <i> to invert selection, and <enter> to proceed)        
-            >(*) Babel
-            ( ) TypeScript
-            ? Check the features needed for your project: Babel, TS, CSS Pre-processors, Linter
-            ? Choose a version of Vue.js that you want to start the project with 3.x
-            ? Use class-style component syntax? No
-            ? Use Babel alongside TypeScript (required for modern mode, auto-detected polyfills, transpiling JSX)? Yes
-            ? Pick a CSS pre-processor (PostCSS, Autoprefixer and CSS Modules are supported by default): Sass/SCSS (with dart-sass)
-            ? Pick a linter / formatter config: Basic
-            ? Pick additional lint features: Lint on save
-            ? Where do you prefer placing config for Babel, ESLint, etc.? In dedicated config files
-            ? Save this as a preset for future projects? No         
-            ```
++ Ejecutar:
+    + $ vue create cssexample
+    + Ejemplo de opciones seleccionadas para la creación de un proyecto:
+        ```
+        Vue CLI v5.0.8
+        ? Please pick a preset: Manually select features
+        ? Check the features needed for your project: (Press <space> to select, <a> to toggle all, <i> to invert selection, and <enter> to proceed)        
+        >(*) Babel
+        ( ) TypeScript
+        ? Check the features needed for your project: Babel, TS, CSS Pre-processors, Linter
+        ? Choose a version of Vue.js that you want to start the project with 3.x
+        ? Use class-style component syntax? No
+        ? Use Babel alongside TypeScript (required for modern mode, auto-detected polyfills, transpiling JSX)? Yes
+        ? Pick a CSS pre-processor (PostCSS, Autoprefixer and CSS Modules are supported by default): Sass/SCSS (with dart-sass)
+        ? Pick a linter / formatter config: Basic
+        ? Pick additional lint features: Lint on save
+        ? Where do you prefer placing config for Babel, ESLint, etc.? In dedicated config files
+        ? Save this as a preset for future projects? No         
+        ```
 + Incluir pre-procesador css en un proyecto existente:
     + SASS:
         + $ npm install -D sass-loader sass
@@ -179,6 +178,25 @@
         </style>            
         ```
 
+## Proyectos con enrutado:
++ Ejecutar:
+    + $ vue create routingexample
+    + Ejemplo de opciones seleccionadas para la creación de un proyecto:
+        ```
+        Vue CLI v5.0.8
+        ? Please pick a preset: Manually select features
+        ? Check the features needed for your project: Babel, TS, Router, CSS Pre-processors, Linter
+        ? Choose a version of Vue.js that you want to start the project with 3.x
+        ? Use class-style component syntax? No
+        ? Use Babel alongside TypeScript (required for modern mode, auto-detected polyfills, transpiling JSX)? Yes
+        ? Use history mode for router? (Requires proper server setup for index fallback in production) Yes
+        ? Pick a CSS pre-processor (PostCSS, Autoprefixer and CSS Modules are supported by default): Sass/SCSS (with dart-sass)
+        ? Pick a linter / formatter config: Basic
+        ? Pick additional lint features: Lint on save
+        ? Where do you prefer placing config for Babel, ESLint, etc.? In dedicated config files
+        ? Save this as a preset for future projects? No      
+        ```
+    + Las rutas se definen en **proyectos_vue\routingexample\src\router\index.ts**.
 
 ## Estructura recomendada de carpetas de un proyecto Vue:
 + **node_modules**: dependencias npm.
@@ -187,8 +205,10 @@
     + **assets**
     + **components**
     + **interfaces**
+    + **router**
     + **scss**: contenedor de archivos de pre-procesadores css.
     + **services**
+    + **view**
 
 
 
@@ -1020,4 +1040,15 @@
     </script>
     <!-- ... -->
     ```
-
+### Instalar bootstrap:
++ Ejecutar:
+    + $ npm install --save bootstrap
+    + $ npm install --save @popperjs/core
++ Incorporar bootstrap al proyecto:
+    + Modificar archivo principal **...\src\main.ts** o **...\src\main.js**:
+        ```js
+        // ...
+        import "bootstrap/dist/css/bootstrap.min.css"
+        import "bootstrap"
+        // ...
+        ```
