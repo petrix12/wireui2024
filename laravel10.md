@@ -89,8 +89,24 @@
             Route::get('ruta3', 'metodo3');
         });
 
-        // Ruta tipo resource
-        Route::resource('ruta', NombreController::class)->names('rutas');
+        // Rutas necesarias para hacer un CRUD
+        // 1. Mostrar la lista de registros
+        Route::get('registros', [RegistroController::class, 'index'])->name('registos.index');
+        // 2. Crear un registro
+        Route::get('registros/create', [RegistroController::class, 'create'])->name('registos.create');
+        // 3. Guardar un registro
+        Route::post('registros', [RegistroController::class, 'store'])->name('registos.store');
+        // 4. Mostrar un registro
+        Route::get('registros/{registro}', [RegistroController::class, 'show'])->name('registos.show');
+        // 5. Editar un registro
+        Route::get('registros/{registro}/edit', [RegistroController::class, 'edit'])->name('registos.edit');
+        // 6. Actualizar un registro
+        Route::put('registros/{registro}', [RegistroController::class, 'update'])->name('registos.update');
+        // 7. Eliminar un registro
+        Route::delete('registros/{registro}', [RegistroController::class, 'destroy'])->name('registos.destroy');
+
+        // Ruta tipo resource (necesarias para hacer un CRUD, es equivalente a al conjuto de reutas definidas anteriormente)
+        Route::resource('registros', RegistroController::class)->names('registross');
 
         // Ruta tipo resource indicando los métodos del controlador a usar
         // Luego en el controlador NombreController se pueden incluir sololos métodos que se esten usando
@@ -145,10 +161,20 @@
         <a href="{{ route('mi_ruta.ruta') }}">Mi ruta</a>
         <!-- ... -->
         ```
-    + **Nota 1:** ejemplo para invocar ruta con parámetro desde una vista:
+    + **Nota 2:** ejemplo para invocar ruta con parámetro desde una vista:
         ```php
         <!-- ... -->
         <a href="{{ route('mi_ruta.ruta', 'parametro') }}">Mi ruta</a>
+        <!-- ... -->
+        ```
+    + **Nota 3:** ejemplo para invocar ruta con varios parámetro desde una vista:
+        ```php
+        <!-- ... -->
+        <a href="{{ route('mi_ruta.ruta', [
+                'parametro1' => $valor1,
+                'parametro2' => $valor2
+            ]) }}"
+        >Mi ruta</a>
         <!-- ... -->
         ```
 + Ejemplo de modelo de rutas para un CRUD:
@@ -181,12 +207,12 @@
     + $ php artisan r:l --only-vendor
 + Ver todas las rutas con junto con el middelware que la protege:
     + $ php artisan r:l -v
-+ Llamar una ruta desde una vista:
-    ```php
-    <!-- -->
-    <a href="{{ route('nombre.ruta', $parametros) }}">
-    <!-- -->
-    ```
++ Almacenar rutas en cache:
+    + $ php artisan route:cache
+    + **Nota**: este comando se recomienda usar en producción y no durante el desarrollo.
++ Limpiar rutas en cache:
+    + $ php artisan route:clear
+
 
 ## Controladores
 + Crear controlador:
