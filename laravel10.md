@@ -116,6 +116,57 @@
         // Luego en el controlador NombreController se pueden eliminar todos los métodos que no se esten usando
         Route::resource('ruta', NombreController::class)->except(['show', 'destroy'])->names('rutas');
 
+        // Ruta tipo resource para API (necesarias para hacer un CRUD, como es para API no se generan las rutas create y edit)
+        Route::apiResource('registros', RegistroController::class)->names('registross');
+
+        // Para cambiar el nombre de los parámetros que se reciben en los métodos
+        Route::apiResource('registros', RegistroController::class)->parameters(['registros' => 'rutas']);
+        
+        // Para cambiar los nombres de create y edit:
+        // Modificar el provider: app\Providers\RouteServiceProvider.php
+        /*
+            // ...
+            public function boot(): void
+            {
+                // ...
+                Route::resourceVerbs([
+                    'create' => 'crear',
+                    'edit' => 'editar'
+                ]);
+                // ...
+            }
+            // ...       
+        */
+
+        // Agrupar rutas que compartan un mismo controlador
+        Route::prefix('registros')->name('registos.')->controller(RegistroController::class)->group(function() {
+            // 1. Mostrar la lista de registros
+            Route::get('', 'index')->name('index');
+            // 2. Crear un registro
+            Route::get('/create', 'create')->name('create');
+            // 3. Guardar un registro
+            Route::post('', 'store')->name('store');
+            // 4. Mostrar un registro
+            Route::get('/{registro}', 'show')->name('show');
+            // 5. Editar un registro
+            Route::get('/{registro}/edit', 'edit')->name('edit');
+            // 6. Actualizar un registro
+            Route::put('/{registro}', 'update')->name('update');
+            // 7. Eliminar un registro
+            Route::delete('/{registro}', 'destroy')->name('destroy');            
+        });
+
+        // Ruta para controlador de un solo método: __invoke
+        Route::get('ruta', OnlymetodController::class);
+        /*
+            El controlador OnlymetodController solo contendrá un método:
+            // __invoke: método invocable
+            public function __invoke() {
+                // Lógica del método
+            }
+
+        */
+
         // Definir más de un método en una ruta
         Route::match(['get', 'post'], 'mi_ruta', function() {
             return "Ruta mi_ruta usando el método GET o POST";
@@ -324,6 +375,16 @@
     + $ php artisan make:controller NameController -r
     + **Nota**: este comando genera un controlador con los métodos necesarios para un CRUD:
         + index, create, store, show, edit, update y destroy.
++ Llamar una vista:
+    ```php
+    // ...
+    public function mi_metodo() {
+        return view('mi_vista');
+    }
+    // ...
+    ```
+    + **Nota**: se recomienda nombrar las vista igual que el método.
+
 
 ## Eloquent:
 + Obtener los n últimos registros
