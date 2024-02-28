@@ -197,6 +197,92 @@
         ? Save this as a preset for future projects? No      
         ```
     + Las rutas se definen en **proyectos_vue\routingexample\src\router\index.ts**.
++ Ejemplo de generación de rutas:
+    ```js
+    import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+    import Vista1View from '../views/Vista1View.vue'
+    import Vista3View from '../views/Vista3View.vue'
+    // ...
+    const routes: Array<RouteRecordRaw> = [
+        // ...
+        // Ruta con la vista indicada en el import
+        {
+            path: '/vista1',
+            name: 'ruta1',
+            component: Vista1View
+        },
+
+        // Ruta con la vista indicada en elemento del array de rutas
+        {
+            path: '/vista2',
+            name: 'ruta2',
+            component: () => import('../views/Vista2View.vue')
+        },
+
+        // Ruta con parámetros
+        {
+            path: '/vista3/:parametro1/:parametro2',
+            name: 'ruta3',
+            component: () => import('../views/Vista3View.vue')
+        },
+        // ...
+    ]
+
+    const router = createRouter({
+        history: createWebHistory(process.env.BASE_URL),
+        routes
+    })
+
+    export default router
+    ```
++ Ejemplo para la navegación de rutas:
+    ```html
+    <template>
+        <nav>
+            <!-- Especificando la ruta -->
+            <router-link to="/vista1">Vista 1</router-link> |
+            <!-- Especificando el nombre de la ruta -->
+            <router-link to="{ name: 'ruta2' }">Vista 2</router-link>|
+            <!-- Especificando el nombre de la ruta y enviando parámetros -->
+            <router-link to="{ name: 'ruta3', params: { parametro1: valor1, parametro2: valor2} }">Vista 3</router-link>
+        </nav>
+        <router-view/>
+    </template>
+    <!-- ... -->
+    ```
++ Ejemplo para la obtención de los parámetros de una ruta:
+    ```html
+    <!-- ... -->
+    <script setup>
+    import { onMounted } from 'vue'
+    import { useRoute } from 'vue-router'
+    // ...
+    onMounted(() => {
+        const route = useRoute()
+        route.params.perametro1
+        route.params.perametro2
+    })
+    // ...
+    </script>
+    <!-- ... -->
+    ```
++ Estilos en router link
+    + Clase css para la ruta activa y sus hijas: router-link-active
+    + Clase css para la ruta activa exacta: router-link-exact-active
+    + Ejemplo para redefinir los estilos:
+        ```html
+        <!-- ... -->
+        <style>
+            .router-link-active {
+                /* Establecer estilos */
+            }
+            .router-link-exact-active {
+                /* Establecer estilos */
+            }
+        </style>
+        ```
+
+
 
 ## Estructura recomendada de carpetas de un proyecto Vue:
 + **node_modules**: dependencias npm.
