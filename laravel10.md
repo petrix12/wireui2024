@@ -378,10 +378,19 @@
 + Llamar una vista:
     ```php
     // ...
-    public function mi_metodo() {
-        return view('mi_vista');
+    public function mi_metodo1() {
+        return view('mi_vista1');
     }
     // ...
+    // Enviar variables a la vista
+    // Forma 1:
+    public function mi_metodo1($mi_variable) {
+        return view('mi_vista1', ['mi_variable' => $mi_variable]);
+    }    
+    // Forma 2:
+    public function mi_metodo1($mi_variable) {
+        return view('mi_vista1', compact('mi_variable'));
+    }
     ```
     + **Nota**: se recomienda nombrar las vista igual que el método.
 
@@ -1657,6 +1666,40 @@
             }
         }
         ```
++ Pasar parámetros a todas las vistas:
+    + Modificar el provider **app\Providers\AppServiceProvider.php**:
+        ```php
+        // ...
+        use Illuminate\Support\Facades\View;
+
+        class AppServiceProvider extends ServiceProvider
+        {
+            // ...
+            public function boot(): void
+            {
+                View::share('nombre_variable', 'valor de la variable nombre_variable');
+                /*
+                    Ahora, desde cualquier vista se podrá acceder a $nombre_variable
+                */
+            }
+        }        
+        ```
+        + **Nota**: es mejor práctica realizar esta acción en un provider especifico para esto, por ejemplo se podría crear un provider de nombre **ViewServiceProvider**.
++ Crear un provider:
+    + $ php artisan make:provider PruebaServiceProvider
+    + **Nota*: el provider se creo en **app\Providers\PruebaServiceProvider.php**.
+    + Registrar provider en **config\app.php**:
+        ```php
+        // ...
+        return [
+            // ...
+            'providers' => ServiceProvider::defaultProviders()->merge([
+                // ...
+                App\Providers\PruebaServiceProvider::class,
+            ])->toArray(),
+            // ...
+        ];
+        ```
 
 ## Observer:
 + Crear un observer:
@@ -1715,6 +1758,55 @@
         // ...
     }
     ```
+
+## Pasar parámetros a determinadas vistas:
+1. Crear archivo **app\View\Composers\ViewComposer.php**:
+    ```php
+    <?php
+
+    namespace App\View\Composers;
+    use Illuminate\View\View;
+
+    class ViewComposer {
+        public function compose(View $view) {
+            $view->with('mi_parametro', 'Valor de mi_parametro');
+        }
+    }    
+    ```
+2. Crear providr **ViewServiceProvider**
+    + $ php artisan make:provider ViewServiceProvider
+    + Programar provider **app\Providers\ViewServiceProvider.php**:
+        ```php
+        // ...
+        use Illuminate\Support\Facades\View;
+
+        class AppServiceProvider extends ServiceProvider
+        {
+            // ...
+            public function boot(): void
+            {
+                View::composer(['vista1', 'vista2'], ViewComposer::class);
+                // Si las vistas comienzan con un mismo nombre puedo escribir la instrucción de la siguiente forma
+                // View::composer('vista*', ViewComposer::class);
+                /*
+                    Ahora, desde las vistas vista1 y vista2 se podrá acceder a $mi_parametro
+                */
+            }
+        }        
+        ```
+    + Registrar provider en **config\app.php**:
+        ```php
+        // ...
+        return [
+            // ...
+            'providers' => ServiceProvider::defaultProviders()->merge([
+                // ...
+                App\Providers\PruebaServiceProvider::class,
+            ])->toArray(),
+            // ...
+        ];
+        ```
+
 
 ## Crear una vista markdown:
 1. Instalar la dependencia:
