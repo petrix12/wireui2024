@@ -179,7 +179,24 @@
         ```
 
 ## Proyectos con enrutado:
-+ Ejecutar:
++ Incluir enrutado en un proyecto existente:
+    + $ npm install vue-router
+    + Crear archivo de rutas en **...\src\router\index.ts** (Ver más adelante, en este apartado, un ejemplo)
+    + Importar router en **proyectos_vue\routingexample\src\main.ts**:
+        ```ts
+        // ...
+        import router from './router'
+        // ...
+        createApp(App).use(router).mount('#app')
+        // ...
+        ```
+    + Incluir el router view en el componente principal **proyectos_vue\routingexample\src\App.vue**:
+        ```html
+        <template>
+            <router-view/>
+        </template>        
+        ```
++ Crear proyecto con enrutado:
     + $ vue create routingexample
     + Ejemplo de opciones seleccionadas para la creación de un proyecto:
         ```
@@ -224,6 +241,12 @@
             path: '/vista3/:parametro1/:parametro2',
             name: 'ruta3',
             component: () => import('../views/Vista3View.vue')
+        },
+
+        // Ruta con redirección
+        {
+            path: '/ruta4',
+            reirect: to => { return {name: 'ruta1'} }s
         },
         // ...
     ]

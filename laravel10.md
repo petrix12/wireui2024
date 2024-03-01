@@ -502,7 +502,52 @@
             {{ $modelos->link() }}
         @endsection
         ```
++ Mostrar variables en vista:
+    ```html
+    <!-- ... -->
+    <!-- Con bloqueo de texto enriquecido -->
+    {{ $variable }}
+    <!-- Con escape de texto enriquecido -->
+    {!! $variable !!}
+    <!-- Si estamos trabajando con otro framework que utiliza la misma sintaxis -->
+    @{{ $variable_de_vue }}
+    ```
++ Interactuar arreglos de php con javascript:
+    + Controlador:
+        ```php
+        // ...
+        public function index() {
+            $arreglo = [
+                [
+                    'id' => 1,
+                    'infor' => 'Información 1'
+                ],
+                [
+                    'id' => 2,
+                    'infor' => 'Información 2'
+                ],
+            ];
 
+            return view('vista', compact('arreglo'))
+        }
+        // ...
+        ```
+    + Vista (sin directiva blade):
+        ```html
+        <!-- ... -->
+        <script>
+            let arreglo = {!! json_encode($arreglo) !!}
+        </script>
+        <!-- ... -->
+        ```
+    + Vista (con directiva blade):
+        ```html
+        <!-- ... -->
+        <script>
+            let arreglo = @json($arreglo)
+        </script>
+        <!-- ... -->
+        ```
 
 ## Blade
 + Construcción de plantillas Blade
@@ -586,7 +631,7 @@
             {{ $message }}
         @enderror
         ```
-    + isset (si la variable esta definida):
+    + isset (si la variable esta definida o no tiene un valor asignado):
         ```php
         @isset($variable)
             <p>La variable esta definidad</p>
@@ -594,6 +639,49 @@
             <p>La variable no esta definidad</p>
         @endisset
         ```
+    + unless:
+        ```php
+        @unless($condicion)
+            <p>Este texto se mostrará si $condicion tiene el valor de false</p>
+        @endunless
+        ```
+    + empty:
+        ```php
+        @empty($variable)
+            <p>La variable $variable no existe o no tiene un valor asignado false</p>
+        @endempty
+        ```
+    + env:
+        ```php
+        @env('local')
+            <p>Me encuentro en un entorno local</p>
+        @endenv
+
+        
+        @env('production')
+            <p>Me encuentro en un entorno de producción</p>
+        @endenv
+        ```
+    + production:
+        ```php
+        @production
+            <p>Me encuentro en un entorno de producción</p>
+        @endproduction
+        ```
+    + switch:
+        ```php
+        @switch($caso)
+            @case(1)
+                <p>Caso 1</p>
+            @break
+            @case(2)
+                <p>Caso 2</p>
+            @break
+            @default
+                <p>Sin caso</p>
+        @endswitch
+        ```
+    + mm
 
 ## Migraciones
 + Documentación: https://laravel.com/docs/10.x/migrations
