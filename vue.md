@@ -1016,13 +1016,19 @@
 
         class ModeloService {
             private modelos
+            private modelo
 
             constructor() {
                 this.modelos = ref([])
+                this.modelo = ref([])
             }
 
             getModelos() {
                 return this.modelos
+            }
+
+            getModelo() {
+                return this.modelo
             }
 
             async fetchAll() {
@@ -1031,6 +1037,17 @@
                     const response = await fetch(url)
                     const json = await response.json()
                     this.modelos.value = await json
+                } catch(error) {
+                    console.log(error)
+                }
+            }
+
+            async fetchById(id) {
+                try {
+                    const url = `https:://mi_servicio/modelos/${id}`
+                    const response = await fetch(url)
+                    const json = await response.json()
+                    this.modelo.value = await json
                 } catch(error) {
                     console.log(error)
                 }
