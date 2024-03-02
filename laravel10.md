@@ -622,9 +622,131 @@
             {{ $elemento }}
         @endforeach
         ```
-        + **Nota:** al usar un foreach se crean algunas variables de interes:
+        + **Nota 1:** al usar un foreach se crean algunas variables de interes:
             + $loop->first (Primero elemento)
+            + $loop->last (Último elemento)
             + $loop->index (Elemento actual, el primero tendrá el valor de cero)
+            + $loop->iteration (Elemento actual, el primero tendrá el valor de uno)
+            + $loop->remaining (Iteraciones restantes)
+        + **Nota 2:** para acceder al loop del padre en caso de un bucle foreach anidado:
+            + $loop->parent->first (Primero elemento del bucle padre)
+    + class:
+        ```php
+        <style>
+            .mi-estilo1 {
+                color: blue;
+            }
+            .mi-estilo2 {
+                color: green;
+            }
+        </style>
+        @foreach ($elementos as $elemento)
+            <span @class([ 
+                'mi-estilo1' => $loop->first,
+                'mi-estilo2' => $loop->last,
+            ])>{{ $elemento }}</span>
+        @endforeach
+        ```
+    + forelse:
+        ```php
+        @forelse ($elementos as $elemento)
+            {{ $elemento }}
+        @empty
+            <p>No existen elementos a mostrar</p>
+        @endforelse
+        ```
+    + for:
+        ```php
+        @for ($i = 0; $i < $count; i++)
+            {{ $i }}
+        @endfor
+        ```
+    + continue:
+        ```php
+        <!-- Forma 1 -->
+        @for ($i = 0; $i < $count; i++)
+            @if($i == 3)
+                <p>Cuando $i sea igual a tres se saltará esta iteración a partir de aquí</p>
+                @continue
+            @endif
+            {{ $i }}
+        @endfor
+        <!-- Forma 2 -->
+        @for ($i = 0; $i < $count; i++)
+            <p>Cuando $i sea igual a tres se saltará esta iteración a partir de aquí</p>
+            @continue($i == 3)
+            {{ $i }}
+        @endfor
+        ```
+    + break:
+        ```php
+        <!-- Forma 1 -->
+        @for ($i = 0; $i < $count; i++)
+            @if($i == 3)
+                <p>Cuando $i sea igual a tres se saldrá del bucle</p>
+                @break
+            @endif
+            {{ $i }}
+        @endfor
+        <!-- Forma 2 -->
+        @for ($i = 0; $i < $count; i++)
+            <p>Cuando $i sea igual a tres se saldrá del bucle</p>
+            @break($i == 3)
+            {{ $i }}
+        @endfor
+        ``
+    + while y php:
+        ```php
+        @php
+            $i = 1;
+        @endphp
+
+        @while ($i < $count)
+            {{ $i }}
+            @php
+                $i++;
+            @endphp
+        @endwhile
+        ```
+    + for:
+        ```php
+        @for ($i = 0;$i < $count; $i++)
+            {{ $i }}
+        @endfor
+        ```
+    + checked:
+        ```php
+        <input type="checkbox" @checked($condicion) name="mi_checked">
+        ```
+    + selected:
+        ```php
+        <option value="1" @selected($valor)>Opción ...</option>
+        ```
+    + disabled:
+        ```php
+        <button @disabled($condicion)>Botón</button>
+        ```
+    + readonly y required:
+        ```php
+        <input @readonly($condicion1) @required($condicion2) type="text" value="Readonly" />
+        ```
+    + include, includeIf, inlcudeWhen y includeFirst:
+        ```php
+        <!-- la vista partial.form debe existir -->
+        @include('partial.form')
+        <!-- pasar parámetros a la vista partial.form con la directiva include-->
+        @include('partial.form', ['parametro' => $valor])
+        <!-- si existe la vista partial.form se incluirá en esta vista -->
+        @includeIf('partial.form')
+        <!-- pasar parámetros a la vista partial.form con la directiva includeIf-->
+        @includeIf('partial.form', ['parametro' => $valor])
+        <!-- se trae una vista si se cumple una condición -->
+        @includeWhen($condicion, 'partial.form')
+        <!-- pasar parámetros a la vista partial.form con la directiva includeWhen -->
+        @includeWhen($condicion, 'partial.form', ['parametro' => $valor])
+        <!-- si existe varias vistas y que se traiga la primera -->
+        @includeFirst(['partial.form1', 'partial.form2'])
+        ```
     + error:
         ```php
         @error('variable')
@@ -681,7 +803,6 @@
                 <p>Sin caso</p>
         @endswitch
         ```
-    + mm
 
 ## Migraciones
 + Documentación: https://laravel.com/docs/10.x/migrations
