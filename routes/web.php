@@ -108,3 +108,5 @@ Route::get('markdown', function () {
     // Pasar el contenido HTML a la vista
     return view('markdown')->with('htmlContent', $htmlContent);
 });
+
+Route::get('lang/{lang}', [App\Http\Controllers\LanguageController::class, 'switchLang'])->name('lang');
